@@ -17,3 +17,16 @@ class MockSampleManager(AbstractSampleManager):
 
     def receive_signal(self, signal):
         self.received_signal = signal
+
+
+class MockReceiver(Receiver):
+    """
+    Mock implementation of the receiver, used for tests
+    """
+    def __init__(self):
+        Receiver.__init__(self)
+
+        self.received_sample = None
+
+    def receive_sample(self, sample):
+        self.received_sample = sample

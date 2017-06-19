@@ -1,6 +1,7 @@
 import unittest
 from ..abstracts import *
 from ..mocks import *
+from ..base import *
 
 # To execute tests, go to the project main directory and type:
 # python -m unittest discover
@@ -61,6 +62,85 @@ class AbstractDataReaderTestCase(unittest.TestCase):
         # Check that the received data is True
         self.assertTrue(sample_manager.received_data)
 
+    def test_notify_signal(self):
+        sample_manager = MockSampleManager()
+
+        # Attach the manager
+        self.abstract_data_reader.attach_manager(sample_manager)
+
+        # Check that the received signal is initially None
+        self.assertIsNone(sample_manager.received_signal)
+
+        # Notify the signal by sending START
+        self.abstract_data_reader.notify_signal(ControlSignal.START)
+
+        # Check that the received signal is not none anymore
+        self.assertIsNotNone(sample_manager.received_signal)
+
+        # Check that the received data is START
+        self.assertEqual(sample_manager.received_signal, ControlSignal.START)
+
+    def test_mainloop_not_implemented(self):
+        # The mainloop function must be abstract
+        self.assertRaises(NotImplementedError, self.abstract_data_reader.mainloop)
+
+
+class AbstractSampleManagerTestCase(unittest.TestCase):
+    """
+    Tests to check AbstractSampleManager consistency
+    """
+
+    def setUp(self):
+        # Initialize an AbstractSampleManager
+        self.abstract_sample_manager = AbstractSampleManager()
+
+    def tearDown(self):
+        # Destroy the AbstractSampleManager
+        self.abstract_sample_manager = None
+
+    def test_receiver_attached_correctly(self):
+        receiver = Receiver()
+        # Receiver must not be already attached
+        self.assertNotIn(receiver, self.abstract_sample_manager.receivers)
+        # Attach the receiver
+        self.abstract_sample_manager.attach_receiver(receiver)
+        # Check that the receiver is attached
+        self.assertIn(receiver, self.abstract_sample_manager.receivers)
+
+    def test_receiver_detached_correctly(self):
+        receiver = Receiver()
+        # Attach the receiver
+        self.abstract_sample_manager.attach_receiver(receiver)
+        # Check that the receiver is attached
+        self.assertIn(receiver, self.abstract_sample_manager.receivers)
+        # Detach the receiver
+        self.abstract_sample_manager.detach_receiver(receiver)
+        # Check that the receiver is detached
+        self.assertNotIn(receiver, self.abstract_sample_manager.receivers)
+
+    def test_notify_receivers(self):
+        sample = Sample(None)
+        receiver = MockReceiver()
+        # Attach the receiver
+        self.abstract_sample_manager.attach_receiver(receiver)
+        # Initially the received sample must be none
+        self.assertIsNone(receiver.received_sample)
+        # Notify the receivers
+        self.abstract_sample_manager.notify_receivers(sample)
+        # The received sample must be equal to the sent one
+        self.assertEqual(receiver.received_sample, sample)
+
+    def test_receive_data_not_implemented(self):
+        # The function must be abstract
+        self.assertRaises(NotImplementedError, self.abstract_sample_manager.receive_data, None)
+
+    def test_receive_signal_not_implemented(self):
+        # The function must be abstract
+        self.assertRaises(NotImplementedError, self.abstract_sample_manager.receive_signal, None)
+
+    def test_package_sample_not_implemented(self):
+        # The function must be abstract
+        self.assertRaises(NotImplementedError, self.abstract_sample_manager.package_sample)
 
 if __name__ == '__main__':
     unittest.main()
