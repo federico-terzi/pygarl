@@ -126,7 +126,7 @@ class AbstractGesturePredictor(Receiver):
     Received a Sample, tries to predict the corresponding Gesture.
     The logic involved depends on the implementation.
     """
-
+    # TODO: Tests
     def __init__(self):
         self.callbacks = []
 
