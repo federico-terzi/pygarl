@@ -1,4 +1,7 @@
 class ControlSignal:
+    """
+    Signals that a DataReader sends to a SampleManager
+    """
     START = 0
     STOP = 1
     ERROR = 2
@@ -102,4 +105,53 @@ class Receiver(object):
     Represents the entity that receives a sample and processes it
     """
     def receive_sample(self, sample):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+
+class AbstractGestureRecorder(Receiver):
+    """
+    Represents the entity that, received a Sample, saves it.
+    For example, it can be used to implement un Sample file saver.
+    """
+
+    def receive_sample(self, sample):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def save_sample(self, sample):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+
+class AbstractGesturePredictor(Receiver):
+    """
+    Received a Sample, tries to predict the corresponding Gesture.
+    The logic involved depends on the implementation.
+    """
+
+    def __init__(self):
+        self.callbacks = []
+
+    def attach_callback_manager(self, manager):
+        """
+        Attach a CallbackManager to the GesturePredictor
+        """
+        self.callbacks.append(manager)
+
+    def detach_callback_manager(self, manager):
+        """
+        Detach the CallbackManager from the GesturePredictor
+        """
+        self.callbacks.remove(manager)
+
+    def notify_callbacks(self, gesture_id):
+        """
+        Notify the gesture_id to all the attached CallbackManagers
+        """
+        # Cycle through all the CallbackManagers and notify the gesture
+        for callback in self.callbacks:
+            callback.receive_gesture(gesture_id)
+
+    def receive_sample(self, sample):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def predict(self, sample):
         raise NotImplementedError("This method is not implemented in the abstract class.")

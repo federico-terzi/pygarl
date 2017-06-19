@@ -30,3 +30,17 @@ class MockReceiver(Receiver):
 
     def receive_sample(self, sample):
         self.received_sample = sample
+
+
+class MockFunctionReceiver(object):
+    """
+    Used to test the callback manager
+    """
+    def __init__(self):
+        self.received = False
+
+    def receive(self):
+        """
+        When this function is called, self.received becomes true 
+        """
+        self.received = True
