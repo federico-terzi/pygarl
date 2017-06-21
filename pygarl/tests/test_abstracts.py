@@ -142,5 +142,56 @@ class AbstractSampleManagerTestCase(unittest.TestCase):
         # The function must be abstract
         self.assertRaises(NotImplementedError, self.abstract_sample_manager.package_sample)
 
+
+class AbstractGesturePredictorTestCase(unittest.TestCase):
+    """
+    Tests to check AbstractGesturePredictor behaviour
+    """
+
+    def setUp(self):
+        # Initialize an AbstractGesturePredictor
+        self.abstract_gesture_predictor = AbstractGesturePredictor()
+
+    def tearDown(self):
+        # Destroy the AbstractGesturePredictor
+        self.abstract_gesture_predictor = None
+
+    def test_callback_manager_attached_correctly(self):
+        callback_mg = CallbackManager()
+        # Callback Manager must not be already attached
+        self.assertNotIn(callback_mg, self.abstract_gesture_predictor.callbacks)
+        # Attach the Callback Manager
+        self.abstract_gesture_predictor.attach_callback_manager(callback_mg)
+        # Check that the callback manager is attached
+        self.assertIn(callback_mg, self.abstract_gesture_predictor.callbacks)
+
+    def test_callback_manager_detached_correctly(self):
+        callback_mg = CallbackManager()
+
+        # Attach the Callback Manager
+        self.abstract_gesture_predictor.attach_callback_manager(callback_mg)
+        # Check that the callback manager is attached
+        self.assertIn(callback_mg, self.abstract_gesture_predictor.callbacks)
+        # Detach the Callback Manager
+        self.abstract_gesture_predictor.detach_callback_manager(callback_mg)
+        # Callback Manager must not be already attached
+        self.assertNotIn(callback_mg, self.abstract_gesture_predictor.callbacks)
+
+    def test_notify_callbacks(self):
+        callback_mg = MockCallbackManager()
+
+        self.abstract_gesture_predictor.attach_callback_manager(callback_mg)
+        # Initially the received gesture is None
+        self.assertIsNone(callback_mg.received_gesture)
+        # Notify the gesture
+        self.abstract_gesture_predictor.notify_callbacks("TEST")
+        # Make sure the gesture has been received
+        self.assertEqual(callback_mg.received_gesture, "TEST")
+
+    def test_predict_not_implemented(self):
+        sample = Sample(None)
+        # The function must be abstract
+        self.assertRaises(NotImplementedError, self.abstract_gesture_predictor.predict, sample)
+
 if __name__ == '__main__':
     unittest.main()

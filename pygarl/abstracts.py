@@ -151,7 +151,17 @@ class AbstractGesturePredictor(Receiver):
             callback.receive_gesture(gesture_id)
 
     def receive_sample(self, sample):
-        raise NotImplementedError("This method is not implemented in the abstract class.")
+        """
+        Receive the sample, try to predict the correct gesture and notify all the callbacks
+        """
+        # Predict the gesture
+        predicted_gesture = self.predict(sample)
+        # Notify all the callbacks
+        self.notify_callbacks(predicted_gesture)
 
     def predict(self, sample):
+        """
+        Receive the sample and try to predict the correct gesture
+        Return the gesture id
+        """
         raise NotImplementedError("This method is not implemented in the abstract class.")

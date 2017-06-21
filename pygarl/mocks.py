@@ -44,3 +44,17 @@ class MockFunctionReceiver(object):
         When this function is called, self.received becomes true 
         """
         self.received = True
+
+
+class MockCallbackManager(object):
+    """
+    Used to test the callback manager
+    """
+    def __init__(self):
+        self.received_gesture = None
+
+    def receive_gesture(self, gesture_id):
+        """
+        When this function is called, set self.received_gesture
+        """
+        self.received_gesture = gesture_id
