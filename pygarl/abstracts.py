@@ -46,6 +46,18 @@ class AbstractDataReader(object):
         for manager in self.managers:
             manager.receive_signal(signal)
 
+    def open(self):
+        """
+        Open the connection, not implemented in the abstract class
+        """
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def close(self):
+        """
+        Close the connection, not implemented in the abstract class
+        """
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
     def mainloop(self):
         """
         Not implemented yet, represents the method that endlessly loops listening for events
