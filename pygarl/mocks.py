@@ -1,3 +1,4 @@
+from __future__ import print_function
 from .abstracts import *
 
 
@@ -17,6 +18,27 @@ class MockSampleManager(AbstractSampleManager):
 
     def receive_signal(self, signal):
         self.received_signal = signal
+
+    def package_sample(self):
+        pass
+
+
+class VerboseTestSampleManager(AbstractSampleManager):
+    """
+    Used to print the received values from a DataReader
+    """
+
+    def __init__(self):
+        AbstractSampleManager.__init__(self)
+
+    def receive_data(self, data):
+        print("DATA:", data)
+
+    def receive_signal(self, signal):
+        print("SIGNAL:", signal)
+
+    def package_sample(self):
+        pass
 
 
 class MockReceiver(Receiver):
