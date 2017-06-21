@@ -3,6 +3,9 @@ from .abstracts import AbstractDataReader, ControlSignal
 
 
 class SerialDataReader(AbstractDataReader):
+    """
+    Used to get the data needed to make a sample from a serial connection
+    """
     def __init__(self, serial_port, baud_rate=38400, timeout=100, verbose=False):
         AbstractDataReader.__init__(self)
 
