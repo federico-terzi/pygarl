@@ -65,18 +65,14 @@ class AbstractDataReader(object):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
 
-class AbstractSampleManager(object):
+class Sender(object):
     """
-    Represents the abstraction of a SampleManager, handles the packaging of data into Samples
-    The logic involved vary based on the implementation.
+    Manages the transmission of the samples to the attached Receivers
     """
-    def __init__(self, axis=6):
+    def __init__(self):
         """
-        Initializes the buffer and the receivers list
-        :param axis: Number of axis of the sensors
+        Initializes the receiver list
         """
-        self.axis = axis
-        self.buffer = []
         self.receivers = []
 
     def attach_receiver(self, receiver):
@@ -101,6 +97,23 @@ class AbstractSampleManager(object):
         # Cycle through all receivers, sending them the Sample
         for receiver in self.receivers:
             receiver.receive_sample(sample)
+
+
+class AbstractSampleManager(Sender):
+    """
+    Represents the abstraction of a SampleManager, handles the packaging of data into Samples
+    The logic involved vary based on the implementation.
+    """
+    def __init__(self, axis=6):
+        """
+        Initializes the buffer
+        :param axis: Number of axis of the sensors
+        """
+        # Initialize the sender
+        Sender.__init__(self)
+
+        self.axis = axis
+        self.buffer = []
 
     def receive_data(self, data):
         raise NotImplementedError("This method is not implemented in the abstract class.")

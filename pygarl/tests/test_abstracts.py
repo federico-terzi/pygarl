@@ -85,6 +85,51 @@ class AbstractDataReaderTestCase(unittest.TestCase):
         self.assertRaises(NotImplementedError, self.abstract_data_reader.mainloop)
 
 
+class SenderTestCase(unittest.TestCase):
+    """
+    Tests to check Sender consistency
+    """
+    def setUp(self):
+        # Initialize a Sender
+        self.sender = Sender()
+
+    def tearDown(self):
+        # Destroy the Sender
+        self.sender = None
+
+    def test_receiver_attached_correctly(self):
+        receiver = Receiver()
+        # Receiver must not be already attached
+        self.assertNotIn(receiver, self.sender.receivers)
+        # Attach the receiver
+        self.sender.attach_receiver(receiver)
+        # Check that the receiver is attached
+        self.assertIn(receiver, self.sender.receivers)
+
+    def test_receiver_detached_correctly(self):
+        receiver = Receiver()
+        # Attach the receiver
+        self.sender.attach_receiver(receiver)
+        # Check that the receiver is attached
+        self.assertIn(receiver, self.sender.receivers)
+        # Detach the receiver
+        self.sender.detach_receiver(receiver)
+        # Check that the receiver is detached
+        self.assertNotIn(receiver, self.sender.receivers)
+
+    def test_notify_receivers(self):
+        sample = Sample(None)
+        receiver = MockReceiver()
+        # Attach the receiver
+        self.sender.attach_receiver(receiver)
+        # Initially the received sample must be none
+        self.assertIsNone(receiver.received_sample)
+        # Notify the receivers
+        self.sender.notify_receivers(sample)
+        # The received sample must be equal to the sent one
+        self.assertEqual(receiver.received_sample, sample)
+
+
 class AbstractSampleManagerTestCase(unittest.TestCase):
     """
     Tests to check AbstractSampleManager consistency
