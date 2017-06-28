@@ -3,10 +3,10 @@ class Sample(object):
     Contains the data recorded from the sensors.
     Provides methods to analyze, manage and persist Samples.
     """
-    def __init__(self, data, gesture_id=None, axis=6):
+    def __init__(self, data, gesture_id=None):
         self.data = data
         self.gesture_id = gesture_id
-        self.axis = axis
+        self.axis = 6  # TODO: algorithm to find the number of axis from data
 
     def save_to_file(self, file_path):
         # TODO: save the Sample to a file
