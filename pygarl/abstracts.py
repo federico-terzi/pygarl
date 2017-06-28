@@ -189,3 +189,26 @@ class AbstractGesturePredictor(Receiver):
         Return the gesture id
         """
         raise NotImplementedError("This method is not implemented in the abstract class.")
+
+
+class AbstractMiddleware(Sender, Receiver):
+    """
+    Represents the entity that, after receiving a sample from a Sender, processes it and sends it to another Receiver
+    """
+    def process_sample(self, sample):
+        """
+        Receive the sample, process it and then return it
+        The logic vary with the implementation
+        """
+        # In this case, return the passed sample without processing it
+        return sample
+
+    def receive_sample(self, sample):
+        """
+        Receive a sample, process it and then notify the result to all the attached receivers
+        """
+        # Process the sample
+        processed_sample = self.process_sample(sample)
+
+        # Send the processed sample to all the attached receivers
+        self.notify_receivers(processed_sample)

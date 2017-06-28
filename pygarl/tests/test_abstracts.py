@@ -238,5 +238,49 @@ class AbstractGesturePredictorTestCase(unittest.TestCase):
         # The function must be abstract
         self.assertRaises(NotImplementedError, self.abstract_gesture_predictor.predict, sample)
 
+
+class AbstractMiddlewareTestCase(unittest.TestCase):
+    """
+    Tests to check AbstractMiddleware behaviour
+    """
+
+    def setUp(self):
+        # Initialize an AbstractMiddleware
+        self.abstract_middleware = AbstractMiddleware()
+
+    def tearDown(self):
+        # Destroy the AbstractMiddleware
+        self.abstract_middleware = None
+
+    def test_notify_receivers(self):
+        sample = Sample(None)
+        receiver = MockReceiver()
+        # Attach the receiver
+        self.abstract_middleware.attach_receiver(receiver)
+        # Initially the received sample must be none
+        self.assertIsNone(receiver.received_sample)
+        # Notify the receivers
+        self.abstract_middleware.notify_receivers(sample)
+        # The received sample must be equal to the sent one
+        self.assertEqual(receiver.received_sample, sample)
+
+    def test_receive_sample_and_notify_receivers(self):
+        sample = Sample(None)
+        receiver = MockReceiver()
+        # Attach the receiver
+        self.abstract_middleware.attach_receiver(receiver)
+        # Initially the received sample must be none
+        self.assertIsNone(receiver.received_sample)
+        # Send the sample to the receiver
+        self.abstract_middleware.receive_sample(sample)
+        # The received sample must be equal to the sent one
+        self.assertEqual(receiver.received_sample, sample)
+
+    def test_process_sample_should_not_process(self):
+        sample = Sample(None)
+        # The function should return the sample without processing it ( in the abstract class )
+        self.assertEqual(sample, self.abstract_middleware.process_sample(sample))
+
+
 if __name__ == '__main__':
     unittest.main()
