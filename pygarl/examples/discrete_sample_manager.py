@@ -3,7 +3,7 @@ from ..data_readers import SerialDataReader
 from ..sample_managers import DiscreteSampleManager
 
 # This example uses a SerialDataReader to read data from a serial port
-# and uses a VerboseTestSampleManager to print the received data and signals
+# and uses a DiscreteSampleManager to package samples
 
 # Create the SerialDataReader
 sdr = SerialDataReader("COM6", verbose=False)
