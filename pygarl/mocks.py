@@ -41,6 +41,22 @@ class VerboseTestSampleManager(AbstractSampleManager):
         pass
 
 
+class VerboseMiddleware(AbstractMiddleware):
+    """
+    Used to print the received sample
+    """
+    def __init__(self):
+        AbstractMiddleware.__init__(self)
+        self.counter = 0
+
+    def process_sample(self, sample):
+        print("SAMPLE "+str(self.counter))
+        print(sample)
+        self.counter += 1
+
+        return sample
+
+
 class MockReceiver(Receiver):
     """
     Mock implementation of the receiver, used for tests

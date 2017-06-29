@@ -3,7 +3,7 @@ from .abstracts import ControlSignal, AbstractSampleManager
 
 
 class DiscreteSampleManager(AbstractSampleManager):
-    # TODO: Tests
+    # TODO: Add min_sample_length, a parameter that filter samples too short, should be in self.package_sample()
     def __init__(self, axis=6):
         # Call the base constructor to initialize buffer and axis
         AbstractSampleManager.__init__(self, axis)

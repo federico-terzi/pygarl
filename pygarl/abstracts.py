@@ -136,7 +136,7 @@ class Receiver(object):
 class AbstractGestureRecorder(Receiver):
     """
     Represents the entity that, received a Sample, saves it.
-    For example, it can be used to implement un Sample file saver.
+    For example, it can be used to implement a Sample file saver.
     """
 
     def receive_sample(self, sample):

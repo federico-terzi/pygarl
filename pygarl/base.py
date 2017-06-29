@@ -1,10 +1,12 @@
+import scipy as sp
+
 class Sample(object):
     """
     Contains the data recorded from the sensors.
     Provides methods to analyze, manage and persist Samples.
     """
     def __init__(self, data, gesture_id=None):
-        self.data = data
+        self.data = sp.array(data) # Convert the data to a Numpy array
         self.gesture_id = gesture_id
         self.axis = 6  # TODO: algorithm to find the number of axis from data
 
@@ -16,6 +18,10 @@ class Sample(object):
     def load_from_file(file_path):
         # TODO: should return a Sample object with the data from the file
         pass
+
+    def __str__(self):
+        # Print the data, one frame per line
+        return str(self.data)
 
 
 class CallbackManager(object):
