@@ -5,7 +5,7 @@ from pygarl.mocks import VerboseTestSampleManager
 # and uses a VerboseTestSampleManager to print the received data and signals
 
 # Create the SerialDataReader
-sdr = SerialDataReader("COM6", verbose=False)
+sdr = SerialDataReader("COM6", expected_axis=6, verbose=False)
 
 # Create a simple SampleManager that only prints the received data and signals
 manager = VerboseTestSampleManager()

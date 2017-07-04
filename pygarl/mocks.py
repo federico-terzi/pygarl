@@ -45,15 +45,16 @@ class VerboseMiddleware(AbstractMiddleware):
     """
     Used to print the received sample
     """
-    def __init__(self):
+    def __init__(self, verbose=True):
         AbstractMiddleware.__init__(self)
         self.counter = 0
+        self.verbose = verbose
 
     def process_sample(self, sample):
-        print("SAMPLE "+str(self.counter))
-        print(sample)
-        self.counter += 1
-
+        if self.verbose:
+            print("SAMPLE "+str(self.counter))
+            print(sample)
+            self.counter += 1
         return sample
 
 

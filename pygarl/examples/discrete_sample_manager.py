@@ -8,7 +8,7 @@ from pygarl.sample_managers import DiscreteSampleManager
 # Create the SerialDataReader
 sdr = SerialDataReader("COM6", verbose=False)
 
-# Create a simple SampleManager that only prints the received data and signals
+# Create the SampleManager
 manager = DiscreteSampleManager()
 
 # Attach the manager

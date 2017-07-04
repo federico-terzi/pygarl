@@ -6,13 +6,14 @@ class SerialDataReader(AbstractDataReader):
     """
     Used to get the data needed to make a sample from a serial connection
     """
-    def __init__(self, serial_port, baud_rate=38400, timeout=100, verbose=False):
+    def __init__(self, serial_port, baud_rate=38400, timeout=100, expected_axis=6, verbose=False):
         AbstractDataReader.__init__(self)
 
         self.serial_port = serial_port
         self.baud_rate = baud_rate
         self.timeout = timeout
         self.verbose = verbose
+        self.expected_axis = expected_axis
 
         # Set the serial connection as None initially
         self.serial = None
@@ -72,8 +73,9 @@ class SerialDataReader(AbstractDataReader):
                     # Get the values by splitting the line
                     value_list = line.split(" ")
 
-                    # Excluding START and END, there should be at least one value ( so the total length should be > 2 )
-                    if len(value_list) > 2:
+                    # Excluding START and END, there should be at least one value
+                    # ( so the total length should be 2 + number of expected axis ).
+                    if len(value_list) == (2 + self.expected_axis):
                         # Get the values contained in the list, by removing the first and last element ( START and END )
                         string_values = value_list[1:-1]
 
