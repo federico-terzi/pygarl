@@ -51,8 +51,7 @@ class DiscreteSampleManager(AbstractSampleManager):
 
 
 class StreamSampleManager(AbstractSampleManager):
-    # TODO: Implementation and Tests
-
+    # TODO: Documentation
     def __init__(self, axis=6, window=20, step=10):
         # Call the base constructor to initialize buffer and axis
         AbstractSampleManager.__init__(self, axis)
