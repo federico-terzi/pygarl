@@ -1,12 +1,20 @@
 import scipy as sp
 
+
 class Sample(object):
     """
     Contains the data recorded from the sensors.
     Provides methods to analyze, manage and persist Samples.
     """
+    # TODO: Tests
     def __init__(self, data, gesture_id=None):
-        self.data = sp.array(data) # Convert the data to a Numpy array
+        self.data = sp.array(data)  # Convert the data to a Numpy array
+
+        # Check that data is a 2-dimensional array
+        if self.data.ndim != 2:
+            # If not, raise an exception
+            raise ValueError("Data must be a 2-dimensional array")
+
         self.gesture_id = gesture_id
         self.axis = 6  # TODO: algorithm to find the number of axis from data
 

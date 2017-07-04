@@ -1,7 +1,7 @@
 import unittest
-from ..abstracts import *
-from ..mocks import *
-from ..base import *
+from pygarl.abstracts import *
+from pygarl.mocks import *
+from pygarl.base import *
 
 # To execute tests, go to the project main directory and type:
 # python -m unittest discover

@@ -1,5 +1,5 @@
-from ..data_readers import SerialDataReader
-from ..mocks import VerboseTestSampleManager
+from pygarl.data_readers import SerialDataReader
+from pygarl.mocks import VerboseTestSampleManager
 
 # This example uses a SerialDataReader to read data from a serial port
 # and uses a VerboseTestSampleManager to print the received data and signals

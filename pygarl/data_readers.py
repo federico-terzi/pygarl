@@ -1,5 +1,5 @@
 import serial
-from .abstracts import AbstractDataReader, ControlSignal
+from pygarl.abstracts import AbstractDataReader, ControlSignal
 
 
 class SerialDataReader(AbstractDataReader):

@@ -1,5 +1,5 @@
 from pygarl.base import Sample
-from .abstracts import ControlSignal, AbstractSampleManager
+from pygarl.abstracts import ControlSignal, AbstractSampleManager
 
 
 class DiscreteSampleManager(AbstractSampleManager):

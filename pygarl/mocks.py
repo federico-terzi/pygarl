@@ -1,5 +1,5 @@
 from __future__ import print_function
-from .abstracts import *
+from pygarl.abstracts import *
 
 
 class MockSampleManager(AbstractSampleManager):

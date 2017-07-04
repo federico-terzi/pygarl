@@ -1,10 +1,14 @@
 from pygarl.base import Sample
-from .abstracts import AbstractGesturePredictor
+from pygarl.abstracts import AbstractGesturePredictor
 import scipy as sp
 
 
 class HighestAxisPredictor(AbstractGesturePredictor):
-    # TODO: Documentation and Tests
+    """
+    Return the Axis index with the greatest value.
+    If absolute_values=True, the predictor will calculate the absolute 
+    values before the comparison.
+    """
     def __init__(self, absolute_values=False):
         AbstractGesturePredictor.__init__(self)
 
@@ -16,16 +20,18 @@ class HighestAxisPredictor(AbstractGesturePredictor):
 
         final_frame = None  # Initialize the array that will contain the frame
 
-        # Check the number of frames
-        if sample_frames > 1:
-            # If there is more than one frame, calculate the average of all frames ( for each axis )
-            final_frame = sp.mean(sample.data, axis=0)  # Averaged for each axis
-        elif sample_frames == 1:
-            # If there is only one frame, set the final frame as the first one in the sample
-            final_frame = sample.data[0]
+        # Check that the sample is not empty
+        if sample.data.size > 0:
+            # Check the number of frames
+            if sample_frames > 1:
+                # If there is more than one frame, calculate the average of all frames ( for each axis )
+                final_frame = sp.mean(sample.data, axis=0)  # Averaged for each axis
+            elif sample_frames == 1:
+                # If there is only one frame, set the final frame as the first one in the sample
+                final_frame = sample.data[0]
         else:
-            # If there are no frames, return -1
-            return -1
+            # If the sample is empty, raise an exception
+            raise ValueError("Can't process an empty sample, it must contain data.")
 
         # If absolute_values is true, convert the numbers of the frame into their absolute values
         if self.absolute_values:

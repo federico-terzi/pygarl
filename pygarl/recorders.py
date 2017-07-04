@@ -1,5 +1,5 @@
 from pygarl.base import Sample
-from .abstracts import AbstractGestureRecorder
+from pygarl.abstracts import AbstractGestureRecorder
 
 
 class FileGestureRecorder(AbstractGestureRecorder):

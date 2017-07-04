@@ -1,6 +1,6 @@
 from pygarl.mocks import VerboseMiddleware
-from ..data_readers import SerialDataReader
-from ..sample_managers import DiscreteSampleManager
+from pygarl.data_readers import SerialDataReader
+from pygarl.sample_managers import DiscreteSampleManager
 
 # This example uses a SerialDataReader to read data from a serial port
 # and uses a DiscreteSampleManager to package samples

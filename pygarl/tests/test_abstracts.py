@@ -1,7 +1,7 @@
 import unittest
-from ..abstracts import *
-from ..mocks import *
-from ..base import *
+from pygarl.abstracts import *
+from pygarl.mocks import *
+from pygarl.base import *
 
 # To execute tests, go to the project main directory and type:
 # python -m unittest discover
@@ -118,7 +118,7 @@ class SenderTestCase(unittest.TestCase):
         self.assertNotIn(receiver, self.sender.receivers)
 
     def test_notify_receivers(self):
-        sample = Sample(None)
+        sample = Sample([[]])
         receiver = MockReceiver()
         # Attach the receiver
         self.sender.attach_receiver(receiver)
@@ -164,7 +164,7 @@ class AbstractSampleManagerTestCase(unittest.TestCase):
         self.assertNotIn(receiver, self.abstract_sample_manager.receivers)
 
     def test_notify_receivers(self):
-        sample = Sample(None)
+        sample = Sample([[]])
         receiver = MockReceiver()
         # Attach the receiver
         self.abstract_sample_manager.attach_receiver(receiver)
@@ -234,7 +234,7 @@ class AbstractGesturePredictorTestCase(unittest.TestCase):
         self.assertEqual(callback_mg.received_gesture, "TEST")
 
     def test_predict_not_implemented(self):
-        sample = Sample(None)
+        sample = Sample([[]])
         # The function must be abstract
         self.assertRaises(NotImplementedError, self.abstract_gesture_predictor.predict, sample)
 
@@ -253,7 +253,7 @@ class AbstractMiddlewareTestCase(unittest.TestCase):
         self.abstract_middleware = None
 
     def test_notify_receivers(self):
-        sample = Sample(None)
+        sample = Sample([[]])
         receiver = MockReceiver()
         # Attach the receiver
         self.abstract_middleware.attach_receiver(receiver)
@@ -265,7 +265,7 @@ class AbstractMiddlewareTestCase(unittest.TestCase):
         self.assertEqual(receiver.received_sample, sample)
 
     def test_receive_sample_and_notify_receivers(self):
-        sample = Sample(None)
+        sample = Sample([[]])
         receiver = MockReceiver()
         # Attach the receiver
         self.abstract_middleware.attach_receiver(receiver)
@@ -277,7 +277,7 @@ class AbstractMiddlewareTestCase(unittest.TestCase):
         self.assertEqual(receiver.received_sample, sample)
 
     def test_process_sample_should_not_process(self):
-        sample = Sample(None)
+        sample = Sample([[]])
         # The function should return the sample without processing it ( in the abstract class )
         self.assertEqual(sample, self.abstract_middleware.process_sample(sample))
 
