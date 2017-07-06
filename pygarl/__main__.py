@@ -8,21 +8,27 @@ def cli():
 
 
 @cli.command()
-def record():
+@click.option('--port', '-p', default="COM6", help="Serial Port NAME, for example COM3.")
+@click.argument('target_dir')
+def record(port, target_dir):
     """
-    Record new samples
+    Record new samples and saves them in the passed directory 
     """
-    click.echo("Record")
+    click.echo("Record" + port)
 
 
 @cli.command()
+@click.option('--port', '-p', default="COM6", help="Serial Port NAME, for example COM3.")
 @click.argument('example_name')
-def example(example_name):
+def example(port, example_name):
     """
     Run an example from pygarl.examples
     """
-    # Launch the example
-    importlib.import_module("pygarl.examples." + example_name)
+    # Load the example
+    ex = importlib.import_module("pygarl.examples." + example_name)
+
+    # Run the example
+    ex.run_example(port=port)
 
 
 if __name__ == '__main__':
