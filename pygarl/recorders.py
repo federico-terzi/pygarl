@@ -6,7 +6,6 @@ from pygarl.abstracts import AbstractGestureRecorder
 
 
 class FileGestureRecorder(AbstractGestureRecorder):
-    # TODO: Tests
     def __init__(self, target_dir, max_tries=5):
         AbstractGestureRecorder.__init__(self)
 
@@ -33,8 +32,10 @@ class FileGestureRecorder(AbstractGestureRecorder):
 
         current_try_count = 0  # Initial number of saving tries
 
+        sample_has_been_saved = False
+
         # Loop until a valid filename is found or the limit is reached
-        while current_try_count < self.max_tires:
+        while current_try_count < self.max_tires and not sample_has_been_saved:
             # Generate a 6 chars random string using the uuid library
             random_chars = str(uuid.uuid4())[:6].upper()
 
@@ -54,11 +55,12 @@ class FileGestureRecorder(AbstractGestureRecorder):
                 # If it doesn't exist the name is valid, so save the sample
                 sample.save_to_file(file_path)
 
-                # After the sample has been saved, return
-                return
+                sample_has_been_saved = True
 
             # Increment the try count
             current_try_count += 1
 
-        # The tries limit has been exceeded, raise an exception
-        raise RuntimeError("Can't find a valid filename for the Sample, conflict limit exceeded.")
+        # If the sample has not been saved, it means that the tries limit has been exceeded
+        if not sample_has_been_saved:
+            # The tries limit has been exceeded, raise an exception
+            raise RuntimeError("Can't find a valid filename for the Sample, conflict limit exceeded.")

@@ -1,5 +1,6 @@
 from __future__ import print_function
 from pygarl.abstracts import *
+from pygarl.base import Sample
 
 
 class MockSampleManager(AbstractSampleManager):
@@ -69,6 +70,19 @@ class MockReceiver(Receiver):
 
     def receive_sample(self, sample):
         self.received_sample = sample
+
+
+class MockSample(Sample):
+    """
+    Mock implementation of Sample, used for tests
+    """
+    def __init__(self):
+        Sample.__init__(self, [[]], gesture_id="TESTSAMPLE")
+
+        self.file_path = None
+
+    def save_to_file(self, file_path):
+        self.file_path = file_path
 
 
 class MockFunctionReceiver(object):
