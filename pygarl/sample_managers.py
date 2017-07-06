@@ -3,10 +3,11 @@ from pygarl.abstracts import ControlSignal, AbstractSampleManager
 
 
 class DiscreteSampleManager(AbstractSampleManager):
-    # TODO: Add min_sample_length, a parameter that filter samples too short, should be in self.package_sample()
-    def __init__(self, axis=6):
+    def __init__(self, min_sample_length=1):
         # Call the base constructor to initialize buffer and axis
-        AbstractSampleManager.__init__(self, axis)
+        AbstractSampleManager.__init__(self)
+
+        self.min_sample_length = min_sample_length  # Minimum number of frames for a valid Sample
 
     def start_sample(self):
         """
@@ -44,17 +45,19 @@ class DiscreteSampleManager(AbstractSampleManager):
         """
         Package the sample with the data in the buffer and notify all the attached receivers
         """
-        # Create a sample with the buffer data
-        sample = Sample(data=self.buffer)
-        # Notify all the attached receivers
-        self.notify_receivers(sample)
+        # Notify the receivers only if the sample length is greater than the minimum
+        if len(self.buffer) >= self.min_sample_length:
+            # Create a sample with the buffer data
+            sample = Sample(data=self.buffer)
+            # Notify all the attached receivers
+            self.notify_receivers(sample)
 
 
 class StreamSampleManager(AbstractSampleManager):
     # TODO: Documentation
-    def __init__(self, axis=6, window=20, step=10):
+    def __init__(self, window=20, step=10):
         # Call the base constructor to initialize buffer and axis
-        AbstractSampleManager.__init__(self, axis)
+        AbstractSampleManager.__init__(self)
 
         # Step size must be lower or equal to the window size, if not, raise an exception
         if step > window:

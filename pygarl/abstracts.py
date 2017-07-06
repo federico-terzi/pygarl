@@ -104,15 +104,13 @@ class AbstractSampleManager(Sender):
     Represents the abstraction of a SampleManager, handles the packaging of data into Samples
     The logic involved vary based on the implementation.
     """
-    def __init__(self, axis=6):
+    def __init__(self):
         """
         Initializes the buffer
-        :param axis: Number of axis of the sensors
         """
         # Initialize the sender
         Sender.__init__(self)
 
-        self.axis = axis
         self.buffer = []
 
     def receive_data(self, data):

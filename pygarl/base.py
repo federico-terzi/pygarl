@@ -16,7 +16,6 @@ class Sample(object):
             raise ValueError("Data must be a 2-dimensional array")
 
         self.gesture_id = gesture_id
-        self.axis = 6  # TODO: algorithm to find the number of axis from data
 
     def save_to_file(self, file_path):
         """
