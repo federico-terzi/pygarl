@@ -1,11 +1,29 @@
-import sys, importlib
+import click  # Use the click library to provide a CLI interface
+import importlib
 
-# Example of usage:
-# python -m pygarl serial_data_reader
-# This command loads and executes the "serial_data_reader.py" module in the example folder
 
-# If the length is 2, load the corresponding example
-if len(sys.argv) == 2:
-    # Launch the passed example
-    importlib.import_module("pygarl.examples."+sys.argv[1])
+@click.group()
+def cli():
+    pass
 
+
+@cli.command()
+def record():
+    """
+    Record new samples
+    """
+    click.echo("Record")
+
+
+@cli.command()
+@click.argument('example_name')
+def example(example_name):
+    """
+    Run an example from pygarl.examples
+    """
+    # Launch the example
+    importlib.import_module("pygarl.examples." + example_name)
+
+
+if __name__ == '__main__':
+    cli()
