@@ -1,3 +1,7 @@
+import os
+from pygarl.base import Sample
+
+
 class ControlSignal:
     """
     Signals that a DataReader sends to a SampleManager
@@ -210,3 +214,110 @@ class AbstractMiddleware(Sender, Receiver):
 
         # Send the processed sample to all the attached receivers
         self.notify_receivers(processed_sample)
+
+
+class AbstractClassifier(object):
+    # TODO: Documentation and Tests
+    def __init__(self, dataset_path=None, model_path=None, verbose=False):
+        # Dataset_path and model_path must be mutually exclusive and can't be both defined.
+        # That's because dataset_path is used in the training phase, while
+        # model_path is used when loading an existing model.
+        # Those are very different moments and should be handled differently
+        if model_path is not None and dataset_path is not None:
+            # If both are defined, raise an exception
+            raise ValueError("dataset_path and model_path must not be defined together.")
+
+        self.dataset_path = dataset_path
+        self.model_path = model_path
+        self.verbose = verbose
+
+        # This is initially false and becomes true only when a valid model is ready
+        # That could happen when a model is trained or loaded
+        # If this variable is false, no prediction can be made
+        self.is_trained = False
+
+        # Contains the list of all gesture_ids, the index represents the internal id
+        self.gestures = []
+
+        # Contains the list of filenames of all samples contained in the dataset
+        # Initially it is none and must be populated with load_samples_filenames
+        self.samples_filenames = None
+
+    def load_samples_filenames(self):
+        """
+        Load the samples' filenames list contained in the given dataset
+        """
+        # If the dataset is not defined, samples can't be loaded so raise an exception
+        if self.dataset_path is None:
+            raise ValueError("dataset_path must be defined to load samples filenames.")
+
+        # Get the list of files contained in the dataset_path
+        self.samples_filenames = [f for f in os.listdir(self.dataset_path)
+                                  if os.path.isfile(os.path.join(self.dataset_path, f))]
+
+    def load_gestures_ids(self):
+        """
+        Load the gestures' ids of the samples contained in the given dataset
+        """
+        # If the dataset is not defined, gestures can't be loaded so raise an exception
+        if self.dataset_path is None:
+            raise ValueError("dataset_path must be defined to load the gestures.")
+
+        # Samples' filenames must have been loaded before calling this method
+        if self.samples_filenames is None:
+            raise ValueError("samples_filenames must be loaded before calling this method. "
+                             "That can be done using load_samples_filenames()")
+
+        # Cycle through all file names
+        for f in self.samples_filenames:
+            # Get the gesture out of the filename by taking the string before the first underscore _
+            gesture_id = f.split("_")[0]
+
+            # If gesture_id is not already present in the dictionary
+            if gesture_id not in self.gestures:
+                # Add the new gesture_id to the list
+                self.gestures.append(gesture_id)
+
+    def load_samples_data(self):
+        """
+        Loads the samples data by cycling through each of them and calling the
+        implementation-specific "load_sample_data" for each of them
+        """
+        # If the dataset is not defined, gestures can't be loaded so raise an exception
+        if self.dataset_path is None:
+            raise ValueError("dataset_path must be defined to load the gestures.")
+
+        # Samples' filenames must have been loaded before calling this method
+        if self.samples_filenames is None:
+            raise ValueError("samples_filenames must be loaded before calling this method. "
+                             "That can be done using load_samples_filenames()")
+
+        # Cycle through all file names
+        for f in self.samples_filenames:
+            # Generate the complete sample path
+            complete_path = os.path.join(self.dataset_path, f)
+
+            # Load the sample
+            sample = Sample.load_from_file(complete_path)
+
+            # Call the implementation-specific load_sample_data method
+            self.load_sample_data(sample)
+
+    def load_sample_data(self, sample):
+        """
+        Called for each sample in the dataset, should handle the manipulation of data
+        used later to train the classifier.
+        """
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def train_model(self):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def save_model(self, model_path):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def load_from_file(self, model_path):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def predict(self, sample):
+        raise NotImplementedError("This method is not implemented in the abstract class.")
