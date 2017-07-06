@@ -42,7 +42,7 @@ class FileGestureRecorderTestCase(unittest.TestCase):
 
     def test_save_sample(self):
         sample = MockSample()
-        self.recorder.save_sample(sample)
+        self.assertTrue(self.recorder.save_sample(sample).startswith("TESTSAMPLE_"))
 
         self.assertTrue("TESTSAMPLE_" in sample.file_path)
 

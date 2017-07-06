@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import uuid
 import time
@@ -6,7 +7,7 @@ from pygarl.abstracts import AbstractGestureRecorder
 
 
 class FileGestureRecorder(AbstractGestureRecorder):
-    def __init__(self, target_dir, max_tries=5):
+    def __init__(self, target_dir, max_tries=5, verbose=False, forced_gesture_id=None):
         AbstractGestureRecorder.__init__(self)
 
         # Make sure the directory is valid, if not, raise an exception
@@ -15,6 +16,8 @@ class FileGestureRecorder(AbstractGestureRecorder):
 
         self.target_dir = target_dir
         self.max_tires = max_tries  # Maximum number of saving tries when a filename conflict occur
+        self.verbose = verbose
+        self.forced_gesture_id = forced_gesture_id
 
     def receive_sample(self, sample):
         """
@@ -26,6 +29,10 @@ class FileGestureRecorder(AbstractGestureRecorder):
         """
         Saves the given sample in the target directory
         """
+        # If a forced gesture id is set, override the sample gesture id
+        if self.forced_gesture_id is not None:
+            sample.gesture_id = self.forced_gesture_id
+
         # Make sure the Sample has a gesture_id because it is needed to generate a filename
         if sample.gesture_id is None:
             raise ValueError("The Sample must have a gesture_id to be saved.")
@@ -33,6 +40,7 @@ class FileGestureRecorder(AbstractGestureRecorder):
         current_try_count = 0  # Initial number of saving tries
 
         sample_has_been_saved = False
+        filename = None
 
         # Loop until a valid filename is found or the limit is reached
         while current_try_count < self.max_tires and not sample_has_been_saved:
@@ -64,3 +72,9 @@ class FileGestureRecorder(AbstractGestureRecorder):
         if not sample_has_been_saved:
             # The tries limit has been exceeded, raise an exception
             raise RuntimeError("Can't find a valid filename for the Sample, conflict limit exceeded.")
+
+        # If verbosity is set to True, print the saved sample filename
+        if self.verbose:
+            print("SAMPLE SAVED TO FILE:", filename)
+
+        return filename

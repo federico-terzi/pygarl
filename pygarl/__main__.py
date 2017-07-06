@@ -1,5 +1,20 @@
 import click  # Use the click library to provide a CLI interface
 import importlib
+import os
+from pygarl.plugins.record import record_new_samples
+
+
+def get_default_record_directory():
+    """
+    Used to generate the default user directory for saving new samples
+    """
+    # Get the user HOME directory
+    home = os.path.expanduser("~")
+
+    # Generate the complete path as: $HOME/dataset
+    complete_path = os.path.join(home, "dataset")
+
+    return complete_path
 
 
 @click.group()
@@ -9,12 +24,16 @@ def cli():
 
 @cli.command()
 @click.option('--port', '-p', default="COM6", help="Serial Port NAME, for example COM3.")
-@click.argument('target_dir')
-def record(port, target_dir):
+@click.option('--dir', '-d', default=get_default_record_directory(),
+              help="Target directory where samples will be saved.")
+@click.option('--gesture', '-g', default="SAMPLE",
+              help="Gesture ID of the recorded samples.")
+@click.option('--axis','-a', default=6, help="Number of AXIS in the signal, default 6.")
+def record(port, dir, gesture, axis):
     """
-    Record new samples and saves them in the passed directory 
+    Record new samples and saves them to file
     """
-    click.echo("Record" + port)
+    record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
 
 
 @cli.command()
