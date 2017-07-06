@@ -1,10 +1,67 @@
 import unittest
+import os
+import shutil
 from pygarl.abstracts import *
 from pygarl.mocks import *
 from pygarl.base import *
 
 # To execute tests, go to the project main directory and type:
 # python -m unittest discover
+
+
+class SampleTestCase(unittest.TestCase):
+    """
+    Tests to check FileGestureRecorder behaviour
+    """
+
+    def setUp(self):
+        # Create a test directory if it doesn't exists
+        if not os.path.exists("test_sample_dir"):
+            os.makedirs("test_sample_dir")
+
+        # Create the sample
+        self.sample = Sample([[1, 2, 3], [4, 5, 6]], gesture_id="TESTSAMPLE")
+
+    def tearDown(self):
+        # Destroy the test directory
+        shutil.rmtree("test_sample_dir")
+
+        # Destroy the sample
+        self.recorder = None
+
+    def test_data_must_be_a_2_dimensional_array(self):
+        self.assertRaises(ValueError, Sample, [])
+
+    def test_save_to_file(self):
+        filepath = os.path.join("test_sample_dir", "test_sample.txt")
+        # Save the sample to file
+        self.sample.save_to_file(filepath)
+
+        # Open the json file
+        with open(filepath) as data_file:
+            data = json.load(data_file)
+
+        self.assertEqual(data['gesture_id'], self.sample.gesture_id)
+        self.assertEqual(data['data'], self.sample.data.tolist())
+
+        # Remove the sample at the end
+        os.remove(filepath)
+
+    def test_load_from_file(self):
+        # Create the sample file...
+
+        filepath = os.path.join("test_sample_dir", "test_sample.txt")
+        # Save the sample to file
+        self.sample.save_to_file(filepath)
+
+        # Load the sample
+        sample = Sample.load_from_file(filepath)
+
+        self.assertEqual(sample.gesture_id, self.sample.gesture_id)
+        self.assertEqual(sample.data.tolist(), self.sample.data.tolist())
+
+        # Remove the sample at the end
+        os.remove(filepath)
 
 
 class CallbackManagerTestCase(unittest.TestCase):
@@ -94,7 +151,6 @@ class CallbackManagerTestCase(unittest.TestCase):
         self.manager.notify_gesture('my_gesture2')
         self.assertTrue(receiver1.received)
         self.assertTrue(receiver2.received)
-
 
 if __name__ == '__main__':
     unittest.main()

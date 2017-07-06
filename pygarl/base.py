@@ -1,4 +1,5 @@
 import scipy as sp
+import json
 
 
 class Sample(object):
@@ -6,7 +7,6 @@ class Sample(object):
     Contains the data recorded from the sensors.
     Provides methods to analyze, manage and persist Samples.
     """
-    # TODO: Tests
     def __init__(self, data, gesture_id=None):
         self.data = sp.array(data)  # Convert the data to a Numpy array
 
@@ -19,13 +19,32 @@ class Sample(object):
         self.axis = 6  # TODO: algorithm to find the number of axis from data
 
     def save_to_file(self, file_path):
-        # TODO: save the Sample to a file
-        pass
+        """
+        Save the sample to a file using the JSON format.
+        The absolute filename is specified by the "file_path" parameter.
+        """
+        # Create a dictionary containing all the important data of the sample.
+        # NOTE: the numpy array must be converted to a list to serialize it using JSON.
+        output_data = {'gesture_id': self.gesture_id, 'data': self.data.tolist()}
+
+        # Save the sample to a file ( filename specified by the file_path param ).
+        with open(file_path, 'w') as output_file:
+            json.dump(output_data, output_file)
 
     @staticmethod
     def load_from_file(file_path):
-        # TODO: should return a Sample object with the data from the file
-        pass
+        """
+        Return a Sample object by reading a sample file.
+        """
+        # Open the file and read the content
+        with open(file_path) as input_file:
+            input_data = json.load(input_file)
+
+        # Create a Sample object with the read data
+        sample = Sample(data=input_data['data'], gesture_id=input_data['gesture_id'])
+
+        # Return the Sample object
+        return sample
 
     def __str__(self):
         # Print the data, one frame per line
