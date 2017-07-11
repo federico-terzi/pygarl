@@ -7,6 +7,7 @@ class Sample(object):
     Contains the data recorded from the sensors.
     Provides methods to analyze, manage and persist Samples.
     """
+
     def __init__(self, data, gesture_id=None):
         self.data = sp.array(data)  # Convert the data to a Numpy array
 
@@ -45,6 +46,25 @@ class Sample(object):
         # Return the Sample object
         return sample
 
+    def get_linearized(self, one_dimensional=False):
+        """
+        Linearize the data, combining the axes data.
+        Useful to feed the data into a machine learning algorithm.
+        
+        :param one_dimensional: if True, converts the 2-dim [[]] array to a 1-dim [] array
+        :return: the linearized array containing the sample data
+        """
+        # Reshape the data
+        output = self.data.reshape(1, -1)
+
+        # If one_dimensional is True, makes the array truly one-dimensional
+        if one_dimensional:
+            # The array, after the reshape, is in this form [[1, 2, 3]]
+            # We take the first axis, so it becomes [1, 2, 3]
+            output = output[0]
+
+        return output
+
     def __str__(self):
         # Print the data, one frame per line
         return str(self.data)
@@ -55,6 +75,7 @@ class CallbackManager(object):
     Receive a gesture_id and call the corresponding callback.
     A callback can be associated to a gesture_id using the attach_callback method.
     """
+
     def __init__(self, verbose=False):
         # Callback dictionary that associate gesture_id to callback functions
         self.callbacks = {}

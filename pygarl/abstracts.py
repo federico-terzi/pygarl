@@ -257,6 +257,22 @@ class AbstractClassifier(object):
         # Initially it is none and must be populated with load_samples_filenames
         self.samples_filenames = None
 
+    def load(self):
+        """
+        Used to load the samples data and ids if dataset_path is set
+        or to load the model if model_path is set.
+        """
+        # If the dataset_path is set, load the samples
+        if self.dataset_path is not None:
+            # Load the data needed
+            self.load_samples_filenames()
+            self.load_gestures_ids()
+            self.load_samples_data()
+
+        elif self.model_path is not None:  # If model_path is set, load the model
+            # Load the model
+            self.load_from_file()
+
     def load_samples_filenames(self):
         """
         Load the samples' filenames list contained in the given dataset
@@ -270,6 +286,29 @@ class AbstractClassifier(object):
                                   if os.path.isfile(os.path.join(self.dataset_path, f))]
 
         return self.samples_filenames
+
+    def get_internal_id_from_gesture_id(self, gesture_id):
+        """
+        Return the gesture internal_id. If the gesture_id is not found, raises a ValueError
+        :param gesture_id: a string containing a gesture_id
+        :return: the internal id
+        """
+
+        # Return the internal_id of the given gesture_id
+        # If the gesture_id is not found, raises a ValueError
+        return self.gestures.index(gesture_id)
+
+    @staticmethod
+    def get_gesture_id_from_filename(filename):
+        """
+        Return the gesture_id from the given filename
+        :param filename: Name of the file, without the path
+        :return: the gesture_id as string
+        """
+        # Get the gesture out of the filename by taking the string before the first underscore _
+        gesture_id = filename.split("_")[0]
+
+        return gesture_id
 
     def load_gestures_ids(self):
         """
@@ -286,8 +325,8 @@ class AbstractClassifier(object):
 
         # Cycle through all file names
         for f in self.samples_filenames:
-            # Get the gesture out of the filename by taking the string before the first underscore _
-            gesture_id = f.split("_")[0]
+            # Get the gesture out of the filename
+            gesture_id = AbstractClassifier.get_gesture_id_from_filename(f)
 
             # If gesture_id is not already present in the dictionary
             if gesture_id not in self.gestures:
@@ -350,7 +389,7 @@ class AbstractClassifier(object):
     def save_model(self, model_path):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
-    def load_from_file(self, model_path):
+    def load_from_file(self):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
 

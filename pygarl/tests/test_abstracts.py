@@ -356,6 +356,9 @@ class AbstractClassifierTestCase(unittest.TestCase):
         self.assertIn("id2", ids)
         self.assertIn("id5", ids)
 
+    def test_get_gesture_id_from_filename(self):
+        self.assertEqual("id1", AbstractClassifier.get_gesture_id_from_filename("id1_0_0"))
+
     def test_load_samples_data_should_fail_if_called_before_loading_samples_filenames(self):
         self.assertRaises(ValueError, self.classifier.load_samples_data)
 
@@ -382,8 +385,6 @@ class AbstractClassifierTestCase(unittest.TestCase):
         self.assertFalse(self.classifier.is_trained)
 
         self.assertRaises(ValueError, self.classifier.predict, Sample([[]]))
-
-
 
 
 if __name__ == '__main__':
