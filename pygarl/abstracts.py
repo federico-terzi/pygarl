@@ -16,6 +16,7 @@ class AbstractDataReader(object):
     Represents the Abstraction of the low level data receiver and manages the communication
     with the signal source, as an Arduino or GPIOs pins.
     """
+
     def __init__(self):
         self.managers = []
 
@@ -73,6 +74,7 @@ class Sender(object):
     """
     Manages the transmission of the samples to the attached Receivers
     """
+
     def __init__(self):
         """
         Initializes the receiver list
@@ -108,6 +110,7 @@ class AbstractSampleManager(Sender):
     Represents the abstraction of a SampleManager, handles the packaging of data into Samples
     The logic involved vary based on the implementation.
     """
+
     def __init__(self):
         """
         Initializes the buffer
@@ -131,6 +134,7 @@ class Receiver(object):
     """
     Represents the entity that receives a sample and processes it
     """
+
     def receive_sample(self, sample):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
@@ -153,6 +157,7 @@ class AbstractGesturePredictor(Receiver):
     Received a Sample, tries to predict the corresponding Gesture.
     The logic involved depends on the implementation.
     """
+
     def __init__(self):
         self.callbacks = []
 
@@ -197,6 +202,7 @@ class AbstractMiddleware(Sender, Receiver):
     """
     Represents the entity that, after receiving a sample from a Sender, processes it and sends it to another Receiver
     """
+
     def process_sample(self, sample):
         """
         Receive the sample, process it and then return it
@@ -217,7 +223,12 @@ class AbstractMiddleware(Sender, Receiver):
 
 
 class AbstractClassifier(object):
-    # TODO: Documentation and Tests
+    """
+    Represents an entity that takes a directory containing a set of samples
+    and creates a model that can be used to predict at which gesture a sample
+    belongs to.
+    """
+
     def __init__(self, dataset_path=None, model_path=None, verbose=False):
         # Dataset_path and model_path must be mutually exclusive and can't be both defined.
         # That's because dataset_path is used in the training phase, while
@@ -226,6 +237,10 @@ class AbstractClassifier(object):
         if model_path is not None and dataset_path is not None:
             # If both are defined, raise an exception
             raise ValueError("dataset_path and model_path must not be defined together.")
+
+        # One of them must be defined, if not, raise an exception
+        if model_path is None and dataset_path is None:
+            raise ValueError("You must define model_path or dataset_path")
 
         self.dataset_path = dataset_path
         self.model_path = model_path
@@ -255,6 +270,8 @@ class AbstractClassifier(object):
         self.samples_filenames = [f for f in os.listdir(self.dataset_path)
                                   if os.path.isfile(os.path.join(self.dataset_path, f))]
 
+        return self.samples_filenames
+
     def load_gestures_ids(self):
         """
         Load the gestures' ids of the samples contained in the given dataset
@@ -277,6 +294,8 @@ class AbstractClassifier(object):
             if gesture_id not in self.gestures:
                 # Add the new gesture_id to the list
                 self.gestures.append(gesture_id)
+
+        return self.gestures
 
     def load_samples_data(self):
         """
@@ -303,11 +322,27 @@ class AbstractClassifier(object):
             # Call the implementation-specific load_sample_data method
             self.load_sample_data(sample)
 
+    def predict(self, sample):
+        """
+        Return the gesture id associated with the given sample ( using a prediction algorithm ).
+        IMPORTANT: to customize the prediction algorithm, you must override the 
+        "predict_sample" method, not this one.
+        """
+        # The model must be trained before making a prediction, if not, raise an exception
+        if not self.is_trained:
+            raise ValueError("The model must be trained before making a prediction")
+
+        # Pass the sample to the inner prediction function
+        return self.predict_sample(sample)
+
     def load_sample_data(self, sample):
         """
         Called for each sample in the dataset, should handle the manipulation of data
         used later to train the classifier.
         """
+        raise NotImplementedError("This method is not implemented in the abstract class.")
+
+    def predict_sample(self, sample):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
     def train_model(self):
@@ -319,5 +354,4 @@ class AbstractClassifier(object):
     def load_from_file(self, model_path):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
-    def predict(self, sample):
-        raise NotImplementedError("This method is not implemented in the abstract class.")
+

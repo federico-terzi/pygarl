@@ -1,4 +1,7 @@
 import unittest
+
+import shutil
+
 from pygarl.abstracts import *
 from pygarl.mocks import *
 from pygarl.base import *
@@ -280,6 +283,107 @@ class AbstractMiddlewareTestCase(unittest.TestCase):
         sample = Sample([[]])
         # The function should return the sample without processing it ( in the abstract class )
         self.assertEqual(sample, self.abstract_middleware.process_sample(sample))
+
+
+class AbstractClassifierTestCase(unittest.TestCase):
+    """
+    Tests to check AbstractClassifier consistency
+    """
+
+    def create_a_file(self, filename, content='{"gesture_id": "TESTSAMPLE", "data": [[1, 2, 3], [4, 5, 6]]}'):
+        """
+        Create a file, used for tests
+        """
+        with open(os.path.join("test_dir_abstract_classifier", filename), 'w') as output_file:
+            output_file.write(content)
+
+    def setUp(self):
+        # Create a test directory if it doesn't exists
+        if not os.path.exists("test_dir_abstract_classifier"):
+            os.makedirs("test_dir_abstract_classifier")
+
+        # Create a bunch of files
+        self.create_a_file("id1_0_0.txt")
+        self.create_a_file("id1_1_0.txt")
+        self.create_a_file("id2_1_0.txt")
+        self.create_a_file("id5_1_0.txt")
+        self.create_a_file("id1_2_0.txt")
+
+        # Initialize an AbstractClassifier
+        self.classifier = AbstractClassifier(dataset_path="test_dir_abstract_classifier")
+
+    def tearDown(self):
+        # Destroy the test directory
+        shutil.rmtree("test_dir_abstract_classifier")
+
+        # Destroy the AbstractClassifier
+        self.classifier = None
+
+    def test_dataset_and_model_both_defined_should_raise_error(self):
+        self.assertRaises(ValueError, AbstractClassifier, dataset_path="1", model_path="2")
+
+    def test_at_least_one_dataset_or_model_must_be_defined_should_raise_error(self):
+        self.assertRaises(ValueError, AbstractClassifier)
+
+    def test_load_gestures_ids_should_fail_if_called_before_loading_samples_filenames(self):
+        self.assertRaises(ValueError, self.classifier.load_gestures_ids)
+
+    def test_load_gestures_ids_should_fail_if_dataset_path_is_not_defined(self):
+        # Reset the dataset path
+        self.classifier.dataset_path = None
+        self.assertRaises(ValueError, self.classifier.load_gestures_ids)
+
+    def test_load_samples_filenames_should_fail_if_dataset_path_is_not_defined(self):
+        # Reset the dataset path
+        self.classifier.dataset_path = None
+        self.assertRaises(ValueError, self.classifier.load_samples_filenames)
+
+    def test_load_samples_filenames(self):
+        filenames = self.classifier.load_samples_filenames()
+
+        self.assertIn("id1_0_0.txt", filenames)
+        self.assertIn("id1_1_0.txt", filenames)
+        self.assertIn("id2_1_0.txt", filenames)
+        self.assertIn("id5_1_0.txt", filenames)
+        self.assertIn("id1_2_0.txt", filenames)
+
+    def test_load_gestures_ids(self):
+        self.classifier.load_samples_filenames()
+
+        ids = self.classifier.load_gestures_ids()
+
+        self.assertIn("id1", ids)
+        self.assertIn("id2", ids)
+        self.assertIn("id5", ids)
+
+    def test_load_samples_data_should_fail_if_called_before_loading_samples_filenames(self):
+        self.assertRaises(ValueError, self.classifier.load_samples_data)
+
+    def test_load_samples_data_should_fail_if_dataset_path_is_not_defined(self):
+        # Reset the dataset path
+        self.classifier.dataset_path = None
+        self.assertRaises(ValueError, self.classifier.load_samples_data)
+
+    def test_load_samples_data(self):
+        # Substitute the load_sample_data method of the classifier with a Mock
+        mock = MockFunctionCounter()
+
+        self.classifier.load_sample_data = mock.callback
+        # Counter must be zero initially
+        self.assertEqual(mock.counter, 0)
+
+        self.classifier.load_samples_filenames()
+        self.classifier.load_samples_data()
+
+        # Counter must be zero initially
+        self.assertEqual(mock.counter, len(self.classifier.samples_filenames))
+
+    def test_predict_should_fail_if_the_model_is_not_trained(self):
+        self.assertFalse(self.classifier.is_trained)
+
+        self.assertRaises(ValueError, self.classifier.predict, Sample([[]]))
+
+
 
 
 if __name__ == '__main__':

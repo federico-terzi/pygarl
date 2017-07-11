@@ -99,6 +99,17 @@ class MockFunctionReceiver(object):
         self.received = True
 
 
+class MockFunctionCounter:
+    """
+    Used to test if a function was called, and how many times
+    """
+    def __init__(self):
+        self.counter = 0
+
+    def callback(self, *args):
+        self.counter += 1
+
+
 class MockCallbackManager(object):
     """
     Used to test the callback manager
