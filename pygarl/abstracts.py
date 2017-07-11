@@ -228,7 +228,6 @@ class AbstractClassifier(object):
     and creates a model that can be used to predict at which gesture a sample
     belongs to.
     """
-
     def __init__(self, dataset_path=None, model_path=None, verbose=False):
         # Dataset_path and model_path must be mutually exclusive and can't be both defined.
         # That's because dataset_path is used in the training phase, while
