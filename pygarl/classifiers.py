@@ -89,29 +89,25 @@ class SVMClassifier(AbstractClassifier):
 
         return gesture_id
 
-    def get_save_attributes(self):
+    def get_attributes(self):
         """
         Return a dictionary containing the needed attributes to save the classifier
         """
         # Get the saves attributes from the Parent Classifier
-        attributes = super(SVMClassifier, self).get_save_attributes()
+        attributes = super(SVMClassifier, self).get_attributes()
 
         # Add the Specific attributes of the classifier
         attributes.update({'clf': self.clf})
 
         return attributes
 
-    def load_from_file(self):
+    def load_attributes(self, attributes):
         """
-        Load a previously saved model from a file, specified by the
-        self.model_path parameter, specified in the constructor
+        Load the specified attributes in the classifier.
+        :param attributes: a dictionary containing the attributes
         """
-        # Load the data from the model file
-        input_data = joblib.load(self.model_path)
+        # Load the parent attributes
+        super(SVMClassifier, self).load_attributes(attributes)
 
-        # Populate the class attributes
-        self.gestures = input_data['gestures']
-        self.clf = input_data['clf']
-
-        # Set the model as trained
-        self.is_trained = True
+        # Load specific attributes
+        self.clf = attributes['clf']

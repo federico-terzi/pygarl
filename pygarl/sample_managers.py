@@ -3,7 +3,7 @@ from pygarl.abstracts import ControlSignal, AbstractSampleManager
 
 
 class DiscreteSampleManager(AbstractSampleManager):
-    def __init__(self, min_sample_length=1):
+    def __init__(self, min_sample_length=10):
         # Call the base constructor to initialize buffer and axis
         AbstractSampleManager.__init__(self)
 

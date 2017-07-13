@@ -411,12 +411,23 @@ class AbstractClassifier(object):
         """
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
-    def get_save_attributes(self):
+    def get_attributes(self):
         """
         Return a dictionary containing the needed attributes to save the classifier
         """
         return {'verbose': self.verbose, 'autonormalize': self.autonormalize,
                 'autoscale_size': self.autoscale_size, 'gestures': self.gestures}
+
+    def load_attributes(self, attributes):
+        """
+        Load the specified attributes in the classifier.
+        :param attributes: a dictionary containing the attributes
+        """
+        # Set the parameters
+        self.verbose = attributes['verbose']
+        self.autonormalize = attributes['autonormalize']
+        self.autoscale_size = attributes['autoscale_size']
+        self.gestures = attributes['gestures']
 
     def predict_sample(self, sample):
         raise NotImplementedError("This method is not implemented in the abstract class.")
@@ -436,12 +447,23 @@ class AbstractClassifier(object):
             raise ValueError("The model must be trained before saving it.")
 
         # Get the attributes that must be saved
-        output_data = self.get_save_attributes()
+        output_data = self.get_attributes()
 
         # Dump the model to a file
         joblib.dump(output_data, model_path)
 
     def load_from_file(self):
-        raise NotImplementedError("This method is not implemented in the abstract class.")
+        """
+        Load a previously saved model from a file, specified by the
+        self.model_path parameter, specified in the constructor
+        """
+        # Load the data from the model file
+        input_data = joblib.load(self.model_path)
+
+        # Populate the class attributes
+        self.load_attributes(input_data)
+
+        # Set the model as trained
+        self.is_trained = True
 
 

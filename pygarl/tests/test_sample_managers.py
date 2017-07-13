@@ -16,7 +16,7 @@ class DiscreteSampleManagerTestCase(unittest.TestCase):
     """
     def setUp(self):
         # Initialize the DiscreteSampleManager
-        self.manager = DiscreteSampleManager()
+        self.manager = DiscreteSampleManager(min_sample_length=1)
 
     def tearDown(self):
         # Destroy the sample manager
