@@ -63,8 +63,15 @@ def example(port, example_name, args):
     # Load the example
     ex = importlib.import_module("pygarl.examples." + example_name)
 
+    # Check if there are arguments, if so, get them.
+    arguments = None
+    if len(args) > 0:
+        arguments = args[0]
+
     # Run the example
-    ex.run_example(args, port=port)
+    ex.run_example(arguments, port=port)
+
+
 
 
 if __name__ == '__main__':

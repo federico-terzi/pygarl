@@ -20,7 +20,8 @@ def run_example(*args, **kwargs):
     sdr.attach_manager(manager)
 
     # Create a classifier
-    classifier = SVMClassifier(model_path=args[0])
+    # TODO: Should change the Classifier to not having to specify autonormalize and scale
+    classifier = SVMClassifier(model_path=args[0], autonormalize=True, autoscale_size=50)
 
     # Load the model
     classifier.load()

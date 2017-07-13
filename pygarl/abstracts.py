@@ -9,6 +9,7 @@ class ControlSignal:
     START = 0
     STOP = 1
     ERROR = 2
+    TIMEOUT = 3
 
 
 class AbstractDataReader(object):
@@ -391,6 +392,14 @@ class AbstractClassifier(object):
         if not self.is_trained:
             raise ValueError("The model must be trained before making a prediction")
 
+        # If autonormalize is set, normalize the sample's frames
+        if self.autonormalize:
+            sample.normalize_frames()
+
+        # If autoscale_size is set, scale the number of frames to the specified value
+        if self.autoscale_size is not None:
+            sample.scale_frames(n_frames=self.autoscale_size)
+
         # Pass the sample to the inner prediction function
         return self.predict_sample(sample)
 
@@ -408,6 +417,7 @@ class AbstractClassifier(object):
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
     def save_model(self, model_path):
+        # TODO: A solution to save attributes from the parent class must be studied
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
     def load_from_file(self):

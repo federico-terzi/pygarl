@@ -86,6 +86,9 @@ class SerialDataReader(AbstractDataReader):
                         self.notify_data(values)
                     else:  # An error occurred, dispatch the ERROR event
                         self.notify_signal(ControlSignal.ERROR)
+                elif line == "":  # This could be a timeout
+                    # Dispatch the TIMEOUT event
+                    self.notify_signal(ControlSignal.TIMEOUT)
                 else:  # This must be an error
                     # Dispatch the ERROR event
                     self.notify_signal(ControlSignal.ERROR)
