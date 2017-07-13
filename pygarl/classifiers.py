@@ -1,3 +1,4 @@
+import joblib
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
@@ -5,7 +6,6 @@ from pygarl.abstracts import AbstractClassifier
 
 
 class SVMClassifier(AbstractClassifier):
-    # TODO: implementation and tests
     def __init__(self, params=None, n_jobs=8, test_size=0.35, *args, **kwargs):
         AbstractClassifier.__init__(self, *args, **kwargs)
 
@@ -15,7 +15,7 @@ class SVMClassifier(AbstractClassifier):
 
         # If no parameters are passed, use the default ones
         if params is None:
-            params = {'C': [0.001, 0.01, 0.1, 1], 'kernel': ['linear']}
+            params = {'C': [0.001, 0.01, 0.1], 'kernel': ['linear', 'rbf']}
 
         # Set the classifier parameters
         self.params = params
@@ -52,7 +52,7 @@ class SVMClassifier(AbstractClassifier):
     def train_model(self):
         """
         Train the model using a Grid Search with cross-validation
-        
+
         :return: the score of the best combination of parameters
         """
 
@@ -65,6 +65,9 @@ class SVMClassifier(AbstractClassifier):
 
         # Calculates the score of the best estimator found.
         score = self.clf.score(X_test, Y_test)
+
+        # Set the model as trained
+        self.is_trained = True
 
         return score
 
@@ -87,9 +90,33 @@ class SVMClassifier(AbstractClassifier):
         return gesture_id
 
     def save_model(self, model_path):
-        pass
+        """
+        Save the model to the specified path.
+        Note: the model must be trained before saving.
+        
+        :param model_path: path of the output model file 
+        """
+        # If the model is not trained, raise an exception
+        if not self.is_trained:
+            raise ValueError("The model must be trained before saving it.")
+
+        # Create a dictionary with the necessary data
+        output_data = {'gestures': self.gestures, 'clf': self.clf}
+
+        # Dump the model to a file
+        joblib.dump(output_data, model_path)
 
     def load_from_file(self):
-        pass
+        """
+        Load a previously saved model from a file, specified by the
+        self.model_path parameter, specified in the constructor
+        """
+        # Load the data from the model file
+        input_data = joblib.load(self.model_path)
 
+        # Populate the class attributes
+        self.gestures = input_data['gestures']
+        self.clf = input_data['clf']
 
+        # Set the model as trained
+        self.is_trained = True
