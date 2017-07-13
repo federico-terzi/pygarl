@@ -228,7 +228,15 @@ class AbstractClassifier(object):
     and creates a model that can be used to predict at which gesture a sample
     belongs to.
     """
-    def __init__(self, dataset_path=None, model_path=None, verbose=False):
+    def __init__(self, dataset_path=None, model_path=None, verbose=False, autonormalize=False, autoscale_size=None):
+        """
+        :param dataset_path: path to the directory containing the samples dataset.
+        :param model_path: path to a saved model file.
+        :param verbose: if true, the classifier will print the training progress.
+        :param autonormalize: if true, the classifier will normalize the samples.
+        :param autoscale_size: an integer, if set, the classifier will interpolate the samples frames
+                               to scale them to the number specified by this parameter.
+        """
         # Dataset_path and model_path must be mutually exclusive and can't be both defined.
         # That's because dataset_path is used in the training phase, while
         # model_path is used when loading an existing model.
@@ -244,6 +252,8 @@ class AbstractClassifier(object):
         self.dataset_path = dataset_path
         self.model_path = model_path
         self.verbose = verbose
+        self.autonormalize = autonormalize
+        self.autoscale_size = autoscale_size
 
         # This is initially false and becomes true only when a valid model is ready
         # That could happen when a model is trained or loaded
@@ -356,6 +366,14 @@ class AbstractClassifier(object):
 
             # Load the sample
             sample = Sample.load_from_file(complete_path)
+
+            # If autonormalize is set, normalize the sample's frames
+            if self.autonormalize:
+                sample.normalize_frames()
+
+            # If autoscale_size is set, scale the number of frames to the specified value
+            if self.autoscale_size is not None:
+                sample.scale_frames(n_frames=self.autoscale_size)
 
             # Call the implementation-specific load_sample_data method
             self.load_sample_data(sample)

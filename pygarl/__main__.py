@@ -55,7 +55,8 @@ def train(dir, classifier, output_file):
 @cli.command()
 @click.option('--port', '-p', default="COM6", help="Serial Port NAME, for example COM3.")
 @click.argument('example_name')
-def example(port, example_name):
+@click.argument('args', nargs=-1)
+def example(port, example_name, args):
     """
     Run an example from pygarl.examples
     """
@@ -63,7 +64,7 @@ def example(port, example_name):
     ex = importlib.import_module("pygarl.examples." + example_name)
 
     # Run the example
-    ex.run_example(port=port)
+    ex.run_example(args, port=port)
 
 
 if __name__ == '__main__':

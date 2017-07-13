@@ -1,12 +1,12 @@
-from pygarl.abstracts import AbstractMiddleware
 from pygarl.base import CallbackManager
+from pygarl.classifiers import SVMClassifier
 from pygarl.mocks import VerboseMiddleware
-from pygarl.predictors import HighestAxisPredictor
 from pygarl.data_readers import SerialDataReader
-from pygarl.sample_managers import DiscreteSampleManager, StreamSampleManager
+from pygarl.predictors import ClassifierPredictor
+from pygarl.sample_managers import DiscreteSampleManager
 
 # This example uses a SerialDataReader to read data from a serial port
-# and uses a HighestAxisPredictor to print the most relevant axis
+# and uses a SVMClassifier to translate the gestures
 
 
 def run_example(*args, **kwargs):
@@ -14,24 +14,24 @@ def run_example(*args, **kwargs):
     sdr = SerialDataReader(kwargs['port'], expected_axis=6, verbose=False)
 
     # Create the SampleManager
-    manager = StreamSampleManager(window=10, step=5)
+    manager = DiscreteSampleManager()
 
     # Attach the manager
     sdr.attach_manager(manager)
 
-    # Create the VerboseMiddleware that prints the received sample
-    middleware = VerboseMiddleware(verbose=False)
+    # Create a classifier
+    classifier = SVMClassifier(model_path=args[0])
 
-    # Attach the middleware
-    manager.attach_receiver(middleware)
+    # Load the model
+    classifier.load()
 
-    # Create a predictor
-    predictor = HighestAxisPredictor(absolute_values=True)
+    # Create a ClassifierPredictor
+    predictor = ClassifierPredictor(classifier)
 
-    # Attach the predictor
-    middleware.attach_receiver(predictor)
+    # Attach the classifier predictor
+    manager.attach_receiver(predictor)
 
-    # Create a callback manager
+    # Create a CallbackManager
     callback_mg = CallbackManager(verbose=True)
 
     # Attach the callback manager

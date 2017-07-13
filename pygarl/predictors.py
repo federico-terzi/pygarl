@@ -41,3 +41,23 @@ class HighestAxisPredictor(AbstractGesturePredictor):
 
         # Return the axis index as a string ( a string must be returned as gesture_id )
         return str(max_index)
+
+
+class ClassifierPredictor(AbstractGesturePredictor):
+    """
+    Uses a Classifier to predict at which gesture the sample belongs to.
+    """
+    # TODO: Tests
+    def __init__(self, classifier):
+        AbstractGesturePredictor.__init__(self)
+
+        # Set the parameters
+        self.classifier = classifier
+
+    def predict(self, sample):
+        """
+        Predict the received sample using the Classifier
+        :param sample: sample to predict
+        :return: a string containing the gesture_id
+        """
+        return self.classifier.predict(sample)

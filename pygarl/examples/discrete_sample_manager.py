@@ -6,7 +6,7 @@ from pygarl.sample_managers import DiscreteSampleManager
 # and uses a DiscreteSampleManager to package samples
 
 
-def run_example(**kwargs):
+def run_example(*args, **kwargs):
     # Create the SerialDataReader
     sdr = SerialDataReader(kwargs['port'], expected_axis=6, verbose=False)
 
