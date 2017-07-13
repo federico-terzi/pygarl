@@ -1,4 +1,4 @@
 # pygarl
-pyGARL - Python Gesture and Recognition Library
+pyGARL - Python Gesture Analysis and Recognition Library
 
 Work in progress...
