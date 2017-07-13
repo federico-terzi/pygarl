@@ -89,22 +89,17 @@ class SVMClassifier(AbstractClassifier):
 
         return gesture_id
 
-    def save_model(self, model_path):
+    def get_save_attributes(self):
         """
-        Save the model to the specified path.
-        Note: the model must be trained before saving.
-        
-        :param model_path: path of the output model file 
+        Return a dictionary containing the needed attributes to save the classifier
         """
-        # If the model is not trained, raise an exception
-        if not self.is_trained:
-            raise ValueError("The model must be trained before saving it.")
+        # Get the saves attributes from the Parent Classifier
+        attributes = super(SVMClassifier, self).get_save_attributes()
 
-        # Create a dictionary with the necessary data
-        output_data = {'gestures': self.gestures, 'clf': self.clf}
+        # Add the Specific attributes of the classifier
+        attributes.update({'clf': self.clf})
 
-        # Dump the model to a file
-        joblib.dump(output_data, model_path)
+        return attributes
 
     def load_from_file(self):
         """
