@@ -63,6 +63,22 @@ class SampleTestCase(unittest.TestCase):
         # Remove the sample at the end
         os.remove(filepath)
 
+    def test_scale_frames(self):
+        sample = Sample(data=[[0, 0, 0], [1, 2, 4], [2, 4, 8], [3, 6, 12], [4, 8, 16]])
+        self.assertEqual(sample.data.tolist(), [[0, 0, 0], [1, 2, 4], [2, 4, 8], [3, 6, 12], [4, 8, 16]])
+
+        # Scale down the frames
+        sample.scale_frames(3)
+
+        self.assertEqual(sample.data.tolist(), [[0, 0, 0], [2, 4, 8], [4, 8, 16]])
+
+    def test_get_linearized(self):
+        sample = Sample(data=[[0, 0, 0], [1, 2, 4], [2, 4, 8]])
+        self.assertEqual(sample.data.tolist(), [[0, 0, 0], [1, 2, 4], [2, 4, 8]])
+
+        self.assertEqual(sample.get_linearized().tolist(), [[0, 0, 0, 1, 2, 4, 2, 4, 8]])
+        self.assertEqual(sample.get_linearized(one_dimensional=True).tolist(), [0, 0, 0, 1, 2, 4, 2, 4, 8])
+
 
 class CallbackManagerTestCase(unittest.TestCase):
     """

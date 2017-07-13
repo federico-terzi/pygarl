@@ -1,6 +1,7 @@
-import scipy as sp
 import json
-
+import scipy as sp
+from scipy.interpolate import interp2d
+from sklearn.preprocessing import scale
 
 class Sample(object):
     """
@@ -64,6 +65,35 @@ class Sample(object):
             output = output[0]
 
         return output
+
+    def scale_frames(self, n_frames=50):
+        """
+        Scales the sample frames, interpolating the data.
+        
+        :param n_frames: Final number of frames in the sample.
+        """
+        # Get the Sample data axis dimensions
+        x_size = self.data.shape[0]
+        y_size = self.data.shape[1]
+
+        # Create the indexes in the axis
+        x = sp.arange(0, x_size)
+        y = sp.arange(0, y_size)
+
+        # Create a function that interpolates the data points
+        f = interp2d(y, x, self.data)
+
+        # Create a new index of the desired size ( n_frames ).
+        x_new = sp.linspace(0, x_size - 1, n_frames)
+
+        # Calculate the new interpolated data and change it.
+        self.data = f(y, x_new)
+
+    def normalize_frames(self):
+        """
+        Normalize each axis of the Sample data
+        """
+        self.data = scale(self.data)
 
     def __str__(self):
         # Print the data, one frame per line

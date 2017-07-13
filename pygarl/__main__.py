@@ -2,6 +2,7 @@ import click  # Use the click library to provide a CLI interface
 import importlib
 import os
 from pygarl.plugins.record import record_new_samples
+from pygarl.plugins.train import train_svm_classifier
 
 
 def get_default_record_directory():
@@ -34,6 +35,21 @@ def record(port, dir, gesture, axis):
     Record new samples and saves them to file
     """
     record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
+
+
+@cli.command()
+@click.option('--dir', '-d', default=get_default_record_directory(),
+              help="Dataset directory where samples are saved.")
+@click.option('--classifier', '-c', default="svm",
+              help="Classifier used to create a model. Default is SVM.")
+@click.argument('output_file')
+def train(dir, classifier, output_file):
+    """
+    Train a model from a dataset
+    """
+    # Load the appropriate method based on the specified classifier
+    if classifier == "svm":
+        train_svm_classifier(dir, output_file)
 
 
 @cli.command()
