@@ -36,6 +36,7 @@ class SVMClassifier(AbstractClassifier):
     def load_sample_data(self, sample):
         """
         Process and load a sample before feeding it to the training phase
+        
         :param sample: the loaded Sample
         """
         # Transform the data matrix of the sample in a one-dimensional array
@@ -51,6 +52,7 @@ class SVMClassifier(AbstractClassifier):
     def train_model(self):
         """
         Train the model using a Grid Search with cross-validation
+        
         :return: the score of the best combination of parameters
         """
 
@@ -66,10 +68,25 @@ class SVMClassifier(AbstractClassifier):
 
         return score
 
-    def save_model(self, model_path):
-        pass
-
     def predict_sample(self, sample):
+        """
+        Return the predicted gesture_id of the specified sample
+        
+        :param sample: sample used to predict the gesture 
+        :return: a string containing the "gesture_id"
+        """
+        # Linearize the sample data
+        linearized_sample = sample.get_linearized()
+
+        # Predict the gesture id with the trained model
+        internal_id = self.clf.predict(linearized_sample)
+
+        # Convert the internal_id to the gesture_id string
+        gesture_id = self.gestures[internal_id]
+
+        return gesture_id
+
+    def save_model(self, model_path):
         pass
 
     def load_from_file(self):

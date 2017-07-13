@@ -365,6 +365,9 @@ class AbstractClassifier(object):
         Return the gesture id associated with the given sample ( using a prediction algorithm ).
         IMPORTANT: to customize the prediction algorithm, you must override the 
         "predict_sample" method, not this one.
+        
+        :param sample: sample used to predict the gesture
+        :return: a string containing the "gesture_id" of the sample
         """
         # The model must be trained before making a prediction, if not, raise an exception
         if not self.is_trained:
