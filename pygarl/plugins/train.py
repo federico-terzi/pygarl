@@ -1,5 +1,6 @@
 from __future__ import print_function
 from pygarl.classifiers import SVMClassifier
+import sys
 
 
 def train_svm_classifier(dataset_dir, output_file, n_jobs=1):
@@ -11,7 +12,7 @@ def train_svm_classifier(dataset_dir, output_file, n_jobs=1):
     """
     # Create the classifier
     classifier = SVMClassifier(dataset_path=dataset_dir, verbose=True, n_jobs=n_jobs,
-                               autonormalize=True, autoscale_size=50)
+                               autoscale_size=50)
 
     # Load the data
     print("Loading the data...", end="")
@@ -31,3 +32,8 @@ def train_svm_classifier(dataset_dir, output_file, n_jobs=1):
     classifier.save_model(output_file)
 
     print("DONE")
+
+
+# If launched directly, parse the parameters from sys
+if __name__ == '__main__':
+    train_svm_classifier(sys.argv[0], sys.argv[1], 8)

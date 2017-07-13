@@ -72,7 +72,5 @@ def example(port, example_name, args):
     ex.run_example(arguments, port=port)
 
 
-
-
 if __name__ == '__main__':
     cli()
