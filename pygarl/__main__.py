@@ -29,11 +29,11 @@ def cli():
 @click.option('--gesture', '-g', default="SAMPLE",
               help="Gesture ID of the recorded samples.")
 @click.option('--axis', '-a', default=6, help="Number of AXIS in the signal, default 6.")
-def record(port, directory, gesture, axis):
+def record(port, dir, gesture, axis):
     """
     Record new samples and saves them to file
     """
-    record_new_samples(port=port, gesture_id=gesture, target_dir=directory, expected_axis=axis)
+    record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
 
 
 @cli.command()
