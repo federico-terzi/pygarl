@@ -90,7 +90,7 @@ class SVMClassifier(AbstractClassifier):
         internal_id = self.clf.predict(linearized_sample)
 
         # Convert the internal_id to the gesture_id string
-        gesture_id = self.gestures[internal_id]
+        gesture_id = self.gestures[internal_id[0]]
 
         return gesture_id
 
