@@ -43,6 +43,9 @@ class SVMClassifierTestCase(unittest.TestCase):
         # Load the samples
         self.classifier.load()
 
+        print(self.classifier.x_data)
+        print(self.classifier.y_data)
+
         # Test if samples has been loaded correctly
         self.assertEqual(self.classifier.y_data[0], 0)
         self.assertEqual(self.classifier.x_data[0].tolist(), [1, 1])
