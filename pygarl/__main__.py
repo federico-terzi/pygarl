@@ -2,7 +2,7 @@ import click  # Use the click library to provide a CLI interface
 import importlib
 import os
 from pygarl.plugins.record import record_new_samples
-from pygarl.plugins.train import train_svm_classifier
+from pygarl.plugins.train import train_svm_classifier, train_mlp_classifier
 
 
 def get_default_record_directory():
@@ -50,6 +50,10 @@ def train(dir, classifier, output_file):
     # Load the appropriate method based on the specified classifier
     if classifier == "svm":
         train_svm_classifier(dir, output_file)
+    elif classifier == "mlp":
+        train_mlp_classifier(dir, output_file)
+    else:
+        raise ValueError("{classifier} is not a valid classifier".format(classifier=classifier))
 
 
 @cli.command()
