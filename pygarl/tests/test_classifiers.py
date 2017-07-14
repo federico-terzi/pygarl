@@ -19,15 +19,16 @@ class SVMClassifierTestCase(unittest.TestCase):
 
         # Create the samples with the 4 possibilities of the XOR gate
         sample1 = Sample(data=[[1], [1]], gesture_id="0")
-        sample2 = Sample(data=[[1], [0]], gesture_id="1")
-        sample3 = Sample(data=[[0], [1]], gesture_id="1")
-        sample4 = Sample(data=[[0], [0]], gesture_id="0")
+        sample2 = Sample(data=[[0], [0]], gesture_id="0")
+        sample3 = Sample(data=[[1], [0]], gesture_id="1")
+        sample4 = Sample(data=[[0], [1]], gesture_id="1")
+
 
         # Save the samples in the test directory
         sample1.save_to_file(os.path.join("test_dir_svm_classifier", "0_1.txt"))
-        sample2.save_to_file(os.path.join("test_dir_svm_classifier", "1_1.txt"))
-        sample3.save_to_file(os.path.join("test_dir_svm_classifier", "1_2.txt"))
-        sample4.save_to_file(os.path.join("test_dir_svm_classifier", "0_2.txt"))
+        sample2.save_to_file(os.path.join("test_dir_svm_classifier", "0_2.txt"))
+        sample3.save_to_file(os.path.join("test_dir_svm_classifier", "1_1.txt"))
+        sample4.save_to_file(os.path.join("test_dir_svm_classifier", "1_2.txt"))
 
         # Initialize an AbstractClassifier
         self.classifier = SVMClassifier(dataset_path="test_dir_svm_classifier", test_size=0.5)
@@ -55,6 +56,8 @@ class SVMClassifierTestCase(unittest.TestCase):
 
         self.assertEqual(self.classifier.y_data[3], 1)
         self.assertEqual(self.classifier.x_data[3].tolist(), [0, 1])
+
+
 
         # Test if gestures ids has been loaded correctly
         self.assertEqual(["0", "1"], self.classifier.gestures)
