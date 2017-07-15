@@ -59,6 +59,17 @@ class VerboseMiddleware(AbstractMiddleware):
         return sample
 
 
+class PlotterMiddleware(AbstractMiddleware):
+    """
+    Used to plot the received sample
+    """
+    def __init__(self, verbose=True):
+        AbstractMiddleware.__init__(self)
+
+    def process_sample(self, sample):
+        sample.plot_sample()
+        return sample
+
 class MockReceiver(Receiver):
     """
     Mock implementation of the receiver, used for tests

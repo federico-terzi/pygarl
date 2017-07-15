@@ -1,7 +1,9 @@
 import json
 import scipy as sp
+import matplotlib.pyplot as plt
 from scipy.interpolate import interp2d
 from sklearn.preprocessing import scale
+
 
 class Sample(object):
     """
@@ -94,6 +96,22 @@ class Sample(object):
         Normalize each axis of the Sample data
         """
         self.data = scale(self.data)
+
+    def plot_sample(self):
+        """
+        Using matplotlib, open a dialog with the plotted Sample data.
+        """
+        # Add each axis to the plot
+        for axis in range(self.data.shape[1]):
+            plt.plot(self.data[:, axis], label="AXIS_{axis}".format(axis=axis))
+
+        # Add the axis labels
+        plt.xlabel('time', fontsize=18)
+        plt.ylabel('value', fontsize=16)
+        plt.legend(loc='best', frameon=False)
+
+        # Show the plot
+        plt.show()
 
     def __str__(self):
         # Print the data, one frame per line
