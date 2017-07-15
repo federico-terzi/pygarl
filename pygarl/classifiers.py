@@ -4,6 +4,7 @@ from sklearn import neural_network
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from pygarl.abstracts import AbstractClassifier
+from sklearn.metrics import confusion_matrix
 
 
 class SVMClassifier(AbstractClassifier):
@@ -73,6 +74,10 @@ class SVMClassifier(AbstractClassifier):
         # If verbose is True, print the best model found
         if self.verbose:
             print(self.clf.best_estimator_)
+            # Print the confusion matrix
+            print("Confusion Matrix:")
+            Y_predicted = self.clf.predict(X_test)
+            print(confusion_matrix(Y_test, Y_predicted))
 
         return score
 
@@ -186,6 +191,10 @@ class MLPClassifier(AbstractClassifier):
         # If verbose is True, print the best model found
         if self.verbose:
             print(self.clf.best_estimator_)
+            # Print the confusion matrix
+            print("Confusion Matrix:")
+            Y_predicted = self.clf.predict(X_test)
+            print(confusion_matrix(Y_test, Y_predicted))
 
         return score
 
