@@ -91,7 +91,7 @@ class SerialDataReader(AbstractDataReader):
                         string_values = value_list[1:-1]
 
                         # Convert the values from string to float
-                        values = map(lambda x: float(x), string_values)
+                        values = list(map(lambda x: float(x), string_values))
 
                         # Dispatch the DATA event, sending the values
                         self.notify_data(values)
