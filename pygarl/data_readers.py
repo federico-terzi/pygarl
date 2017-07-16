@@ -1,5 +1,4 @@
 import serial
-import codecs
 
 import sys
 
@@ -61,7 +60,7 @@ class SerialDataReader(AbstractDataReader):
                 # This line is needed for backward compatibility
                 # Converts the string into binary data for python > 3
                 if sys.version_info >= (3,):
-                    line = codecs.latin_1_encode(line)[0]
+                    line = line.decode("utf-8")
 
                 # Deleting the new line characters
                 line = line.replace("\r\n", "")
