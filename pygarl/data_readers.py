@@ -1,4 +1,8 @@
 import serial
+import codecs
+
+import sys
+
 from pygarl.abstracts import AbstractDataReader, ControlSignal
 
 
@@ -51,8 +55,16 @@ class SerialDataReader(AbstractDataReader):
         try:
             # Start the endless loop
             while True:
-                # Read a line from the serial connection, deleting the new line characters
-                line = self.serial.readline().replace("\r\n", "")
+                # Read a line from the serial connection
+                line = self.serial.readline()
+
+                # This line is needed for backward compatibility
+                # Converts the string into binary data for python > 3
+                if sys.version_info >= (3,):
+                    line = codecs.latin_1_encode(line)[0]
+
+                # Deleting the new line characters
+                line = line.replace("\r\n", "")
 
                 # If verbosity is true, print the received line
                 if self.verbose:
