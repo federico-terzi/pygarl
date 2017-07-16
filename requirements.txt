@@ -1,2 +1,6 @@
 joblib
 click
+matplotlib
+scipy
+numpy
+scikit-learn
