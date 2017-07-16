@@ -45,22 +45,22 @@ class SVMClassifierTestCase(unittest.TestCase):
         self.classifier.load()
 
         # Test if samples has been loaded correctly
-        self.assertEqual(self.classifier.y_data[0], 0)
-        self.assertEqual(self.classifier.x_data[0].tolist(), [1, 1])
 
-        self.assertEqual(self.classifier.y_data[1], 0)
-        self.assertEqual(self.classifier.x_data[1].tolist(), [0, 0])
+        # Check there are 2 0s and 2 1s
+        self.assertEqual(len(filter(lambda x: x == 0, self.classifier.y_data)), 2)
+        self.assertEqual(len(filter(lambda x: x == 1, self.classifier.y_data)), 2)
 
-        self.assertEqual(self.classifier.y_data[2], 1)
-        self.assertEqual(self.classifier.x_data[2].tolist(), [1, 0])
+        # Convert to list from numpy array
+        x_data_as_list = map(lambda x: x.tolist(), self.classifier.x_data)
 
-        self.assertEqual(self.classifier.y_data[3], 1)
-        self.assertEqual(self.classifier.x_data[3].tolist(), [0, 1])
-
-
+        self.assertIn([1, 1], x_data_as_list)
+        self.assertIn([1, 0], x_data_as_list)
+        self.assertIn([0, 1], x_data_as_list)
+        self.assertIn([0, 0], x_data_as_list)
 
         # Test if gestures ids has been loaded correctly
-        self.assertEqual(["0", "1"], self.classifier.gestures)
+        self.assertIn("0", self.classifier.gestures)
+        self.assertIn("1", self.classifier.gestures)
 
     def test_train_model(self):
         self.classifier.load()
