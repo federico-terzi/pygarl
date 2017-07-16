@@ -47,8 +47,8 @@ class SVMClassifierTestCase(unittest.TestCase):
         # Test if samples has been loaded correctly
 
         # Check there are 2 0s and 2 1s
-        self.assertEqual(len(filter(lambda x: x == 0, self.classifier.y_data)), 2)
-        self.assertEqual(len(filter(lambda x: x == 1, self.classifier.y_data)), 2)
+        self.assertEqual(len(list(filter(lambda x: x == 0, self.classifier.y_data))), 2)
+        self.assertEqual(len(list(filter(lambda x: x == 1, self.classifier.y_data))), 2)
 
         # Convert to list from numpy array
         x_data_as_list = map(lambda x: x.tolist(), self.classifier.x_data)
