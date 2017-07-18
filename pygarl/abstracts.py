@@ -207,8 +207,9 @@ class AbstractMiddleware(Sender, Receiver):
 
     def process_sample(self, sample):
         """
-        Receive the sample, process it and then return it
-        The logic vary with the implementation
+        Receive the sample, process it and then return it.
+        If None is returned, Sample will be suppressed and will not be notified to the receivers.
+        The logic vary with the implementation.
         """
         # In this case, return the passed sample without processing it
         return sample
@@ -220,8 +221,11 @@ class AbstractMiddleware(Sender, Receiver):
         # Process the sample
         processed_sample = self.process_sample(sample)
 
-        # Send the processed sample to all the attached receivers
-        self.notify_receivers(processed_sample)
+        # If the processed_sample is None, don't send a notification to the receivers
+        # In this way, a middleware can suppress a sample if needed.
+        if processed_sample is not None:
+            # Send the processed sample to all the attached receivers
+            self.notify_receivers(processed_sample)
 
 
 class AbstractClassifier(object):
