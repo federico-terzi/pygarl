@@ -1,6 +1,8 @@
 import click  # Use the click library to provide a CLI interface
 import importlib
 import os
+
+from pygarl.plugins.plist import list_serial_ports
 from pygarl.plugins.record import record_new_samples
 from pygarl.plugins.train import train_svm_classifier, train_mlp_classifier
 
@@ -35,6 +37,14 @@ def record(port, dir, gesture, axis):
     Record new samples and saves them to file
     """
     record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
+
+
+@cli.command()
+def plist():
+    """
+    Prints all the available serial ports
+    """
+    list_serial_ports()
 
 
 @cli.command()
