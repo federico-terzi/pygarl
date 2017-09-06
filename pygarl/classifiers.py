@@ -71,13 +71,16 @@ class SVMClassifier(AbstractClassifier):
         # Set the model as trained
         self.is_trained = True
 
+        # Calculates the confusion matrix
+        Y_predicted = self.clf.predict(X_test)
+        self.confusion_matrix = confusion_matrix(Y_test, Y_predicted)
+
         # If verbose is True, print the best model found
         if self.verbose:
             print(self.clf.best_estimator_)
             # Print the confusion matrix
             print("Confusion Matrix:")
-            Y_predicted = self.clf.predict(X_test)
-            print(confusion_matrix(Y_test, Y_predicted))
+            print(self.confusion_matrix)
 
         return score
 
@@ -188,13 +191,16 @@ class MLPClassifier(AbstractClassifier):
         # Set the model as trained
         self.is_trained = True
 
+        # Calculates the confusion matrix
+        Y_predicted = self.clf.predict(X_test)
+        self.confusion_matrix = confusion_matrix(Y_test, Y_predicted)
+
         # If verbose is True, print the best model found
         if self.verbose:
             print(self.clf.best_estimator_)
             # Print the confusion matrix
             print("Confusion Matrix:")
-            Y_predicted = self.clf.predict(X_test)
-            print(confusion_matrix(Y_test, Y_predicted))
+            print(self.confusion_matrix)
 
         return score
 

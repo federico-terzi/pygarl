@@ -30,6 +30,9 @@ def train_classifier(classifier, dataset_dir, output_file, n_jobs=1, **kwargs):
 
     print("DONE")
 
+    # Plot the confusion matrix
+    classifier.plot_confusion_matrix()
+
 
 def train_svm_classifier(dataset_dir, output_file, n_jobs=1):
     """

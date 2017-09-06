@@ -1,5 +1,8 @@
 import os
 import joblib
+import seaborn
+import pandas
+import matplotlib.pyplot as plt
 from pygarl.base import Sample
 
 
@@ -273,6 +276,9 @@ class AbstractClassifier(object):
         # Initially it is none and must be populated with load_samples_filenames
         self.samples_filenames = None
 
+        # After the classifier has been trained, the confusion matrix is generated
+        self.confusion_matrix = None
+
     def load(self):
         """
         Used to load the samples data and ids if dataset_path is set
@@ -470,4 +476,24 @@ class AbstractClassifier(object):
         # Set the model as trained
         self.is_trained = True
 
+    def plot_confusion_matrix(self):
+        """
+        Plot the confusion matrix using Matplotlib and seaborn.
+        The classifier must have been trained beforehand, if this is not true,
+        this method will raise a ValueError
+        """
+        if self.confusion_matrix is None:
+            raise ValueError("The confusion matrix is not yet defined, you have to train your classifier first!")
 
+        # Create the dataframe for the confusion matrix
+        df_cm = pandas.DataFrame(self.confusion_matrix,
+                                 index=self.gestures,
+                                 columns=self.gestures)
+
+        # Create the HeatMap
+        plt.figure(figsize=(10, 7))
+        seaborn.set(font_scale=1.4)
+        seaborn.heatmap(df_cm, annot=True)
+
+        # Show the Plot
+        plt.show()

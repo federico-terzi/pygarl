@@ -386,6 +386,9 @@ class AbstractClassifierTestCase(unittest.TestCase):
 
         self.assertRaises(ValueError, self.classifier.predict, Sample([[]]))
 
+    def test_plot_confusion_matrix_should_fail_before_training(self):
+        self.assertRaises(ValueError, self.classifier.plot_confusion_matrix)
+
 
 if __name__ == '__main__':
     unittest.main()
