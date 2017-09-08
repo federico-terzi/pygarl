@@ -149,7 +149,7 @@ class CallbackManager(object):
         # If a callback is set, call it. If not, call the default callback
         if gesture_id in self.callbacks:
             # Call the attached callback
-            self.callbacks[gesture_id]()
+            self.callbacks[gesture_id](gesture_id)
         else:
             # If not set, call the default callback
             self.default_callback(gesture_id)
