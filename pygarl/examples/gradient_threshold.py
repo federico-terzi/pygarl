@@ -18,7 +18,7 @@ def run_example(*args, **kwargs):
     sdr.attach_manager(manager)
 
     # Create a threshold middleware
-    middleware = GradientThresholdMiddleware(verbose=False, threshold=30, sample_group_delay=10, group=True)
+    middleware = GradientThresholdMiddleware(verbose=True, threshold=10, sample_group_delay=5, group=True)
 
     # Attach the middleware
     manager.attach_receiver(middleware)
