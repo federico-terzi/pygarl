@@ -1,4 +1,4 @@
-from pygarl.middlewares import GradientThresholdMiddleware
+from pygarl.middlewares import GradientThresholdMiddleware, PlotterMiddleware
 from pygarl.mocks import VerboseMiddleware
 from pygarl.data_readers import SerialDataReader
 from pygarl.sample_managers import DiscreteSampleManager, StreamSampleManager
@@ -26,6 +26,10 @@ def run_example(*args, **kwargs):
     # Create a VerboseMiddleware to print the passed samples
     verbose_mid = VerboseMiddleware()
     middleware.attach_receiver(verbose_mid)
+
+    # Also plot the sample
+    plotter_mid = PlotterMiddleware()
+    verbose_mid.attach_receiver(plotter_mid)
 
     # Open the serial connection
     sdr.open()

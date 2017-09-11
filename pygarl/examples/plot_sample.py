@@ -1,4 +1,5 @@
-from pygarl.mocks import VerboseMiddleware, PlotterMiddleware
+from pygarl.middlewares import PlotterMiddleware
+from pygarl.mocks import VerboseMiddleware
 from pygarl.data_readers import SerialDataReader
 from pygarl.sample_managers import DiscreteSampleManager
 

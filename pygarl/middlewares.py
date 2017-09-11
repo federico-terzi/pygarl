@@ -36,3 +36,21 @@ class GradientThresholdMiddleware(AbstractMiddleware):
             return None
 
 
+class PlotterMiddleware(AbstractMiddleware):
+    """
+    Used to plot sample after being received
+    """
+
+    def __init__(self):
+        # Call the base constructor
+        AbstractMiddleware.__init__(self)
+
+    def process_sample(self, sample):
+        """
+        Plot the sample and return it
+        :param sample: sample to plot
+        """
+        # Plot the sample
+        sample.plot()
+
+        return sample

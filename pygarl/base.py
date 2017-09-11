@@ -97,7 +97,7 @@ class Sample(object):
         """
         self.data = scale(self.data)
 
-    def plot_sample(self):
+    def plot(self):
         """
         Using matplotlib, open a dialog with the plotted Sample data.
         """
