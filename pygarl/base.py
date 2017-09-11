@@ -113,6 +113,13 @@ class Sample(object):
         # Show the plot
         plt.show()
 
+    def gradient(self):
+        """
+        Return a numpy array containing the gradient of the sample data
+        """
+        # Calculate the gradient and extract only the first element
+        return sp.gradient(self.data)[0]
+
     def __str__(self):
         # Print the data, one frame per line
         return str(self.data)
