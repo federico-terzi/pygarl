@@ -92,7 +92,7 @@ class MockFunctionReceiver(object):
     def __init__(self):
         self.received = False
 
-    def receive(self):
+    def receive(self, gesture_id):
         """
         When this function is called, self.received becomes true 
         """

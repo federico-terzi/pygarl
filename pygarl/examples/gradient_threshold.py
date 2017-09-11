@@ -12,24 +12,20 @@ def run_example(*args, **kwargs):
     sdr = SerialDataReader(kwargs['port'], expected_axis=6, verbose=False)
 
     # Create the SampleManager
-    manager = StreamSampleManager()
+    manager = StreamSampleManager(step=20, window=20)
 
     # Attach the manager
     sdr.attach_manager(manager)
 
     # Create a threshold middleware
-    middleware = GradientThresholdMiddleware(verbose=False, threshold=10)
+    middleware = GradientThresholdMiddleware(verbose=False, threshold=30, sample_group_delay=5)
 
     # Attach the middleware
     manager.attach_receiver(middleware)
 
-    # Create a VerboseMiddleware to print the passed samples
-    verbose_mid = VerboseMiddleware()
-    middleware.attach_receiver(verbose_mid)
-
     # Also plot the sample
     plotter_mid = PlotterMiddleware()
-    verbose_mid.attach_receiver(plotter_mid)
+    middleware.attach_receiver(plotter_mid)
 
     # Open the serial connection
     sdr.open()
