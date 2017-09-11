@@ -5,8 +5,14 @@ import numpy as np
 
 
 class GradientThresholdMiddleware(AbstractMiddleware):
-    # TODO: tests and documentation
-    def __init__(self, threshold=10, group=True, sample_group_delay=2, verbose=False):
+    """
+    Used to extract gestures from a stream of samples.
+    It calculates the gradient of the sample data and the average value,
+    if this value is superior to the fixed threshold, it make the sample pass,
+    if not, it blocks the sample.
+    If the group=True, the middleware will try to group different samples into one.
+    """
+    def __init__(self, threshold=10, group=False, sample_group_delay=2, verbose=False):
         """
         Class constructor
         :param threshold: The value that must be crossed to mark a sample as valid.
