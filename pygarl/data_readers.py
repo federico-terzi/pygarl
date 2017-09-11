@@ -91,10 +91,26 @@ class SerialDataReader(AbstractDataReader):
                         string_values = value_list[1:-1]
 
                         # Convert the values from string to float
-                        values = list(map(lambda x: float(x), string_values))
+                        values = []
 
-                        # Dispatch the DATA event, sending the values
-                        self.notify_data(values)
+                        # If true, the data line will be invalidated
+                        has_errors = False
+
+                        for value in string_values:
+                            # Make sure that the character can be converted to float
+                            try:
+                                fvalue = float(value)  # Convert the string
+                                values.append(fvalue)  # Add to the values array
+                            except ValueError:  # Conversion error, mark the data line as wrong
+                                has_errors = True
+
+                        # Before sending the values, make sure they are error free
+                        if not has_errors:
+                            # Dispatch the DATA event, sending the values
+                            self.notify_data(values)
+                        else:
+                            # An error occurred, dispatch the ERROR event
+                            self.notify_signal(ControlSignal.ERROR)
                     else:  # An error occurred, dispatch the ERROR event
                         self.notify_signal(ControlSignal.ERROR)
                 elif line == "":  # This could be a timeout
