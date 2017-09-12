@@ -97,10 +97,21 @@ class Sample(object):
         """
         self.data = scale(self.data)
 
-    def plot(self):
+    def abs(self):
+        """
+        Make each axis of the sample data a positive number calculating the absolute value.
+        """
+        # Calculate the absolute value of each axis
+        self.data = sp.absolute(self.data)
+
+    def plot(self, block=True):
         """
         Using matplotlib, open a dialog with the plotted Sample data.
+        :param block:   if true, the plot will be displayed in a non-blocking way
         """
+        # Clear the plot
+        plt.clf()
+
         # Add each axis to the plot
         for axis in range(self.data.shape[1]):
             plt.plot(self.data[:, axis], label="AXIS_{axis}".format(axis=axis))
@@ -110,8 +121,16 @@ class Sample(object):
         plt.ylabel('value', fontsize=16)
         plt.legend(loc='best', frameon=False)
 
-        # Show the plot
-        plt.show()
+        # Check if the plot display should be blocking
+        if block:  # Blocking
+            plt.show()
+        else:  # Non Blocking
+            # Draw the figure and pause to enable rendering
+            plt.draw()
+            plt.pause(.001)
+
+            # Show the plot
+            plt.show(block=False)
 
     def gradient(self):
         """
