@@ -3,7 +3,7 @@ import importlib
 import os
 
 from pygarl.plugins.plist import list_serial_ports
-from pygarl.plugins.record import record_new_samples
+from pygarl.plugins.record import record_new_samples, record_new_samples_stream
 from pygarl.plugins.train import train_svm_classifier, train_mlp_classifier
 
 
@@ -32,11 +32,15 @@ def cli():
 @click.option('--gesture', '-g', default="SAMPLE",
               help="Gesture ID of the recorded samples.")
 @click.option('--axis', '-a', default=6, help="Number of AXIS in the signal, default 6.")
-def record(port, dir, gesture, axis):
+@click.option('--mode', '-m', default="discrete", help="Recording mode. You can choose between discrete and stream.")
+def record(port, dir, gesture, axis, mode):
     """
     Record new samples and saves them to file
     """
-    record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
+    if mode == "discrete":
+        record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
+    elif mode == "stream":
+        record_new_samples_stream(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
 
 
 @cli.command()
@@ -51,9 +55,11 @@ def plist():
 @click.option('--dir', '-d', default=get_default_record_directory(),
               help="Dataset directory where samples are saved.")
 @click.option('--classifier', '-c', default="svm",
-              help="Classifier used to create a model. Default is SVM.")
+              help="Classifier used to create a model. Default is SVM. You can use svm, mlp and custom.")
+@click.option('--trainer', '-t', default=None,
+              help="Load a custom trainer. --classifier custom must be specified.")
 @click.argument('output_file')
-def train(dir, classifier, output_file):
+def train(dir, classifier, output_file, trainer):
     """
     Train a model from a dataset
     """
@@ -62,6 +68,15 @@ def train(dir, classifier, output_file):
         train_svm_classifier(dir, output_file)
     elif classifier == "mlp":
         train_mlp_classifier(dir, output_file)
+    elif classifier == "custom":
+        if trainer is None:
+            raise ValueError("If --classifier custom is used, a trainer must be specified")
+
+        # Load the trainer
+        trainer = importlib.import_module("pygarl.plugins.trainers." + trainer)
+
+        # Train the classifier
+        trainer.train(dir, output_file)
     else:
         raise ValueError("{classifier} is not a valid classifier".format(classifier=classifier))
 
