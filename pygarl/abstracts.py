@@ -237,7 +237,8 @@ class AbstractClassifier(object):
     and creates a model that can be used to predict at which gesture a sample
     belongs to.
     """
-    def __init__(self, dataset_path=None, model_path=None, verbose=False, autonormalize=False, autoscale_size=None):
+    def __init__(self, dataset_path=None, model_path=None, verbose=False, autonormalize=False, autoscale_size=None,
+                       middlewares=[]):
         """
         :param dataset_path: path to the directory containing the samples dataset.
         :param model_path: path to a saved model file.
@@ -245,6 +246,8 @@ class AbstractClassifier(object):
         :param autonormalize: if true, the classifier will normalize the samples.
         :param autoscale_size: an integer, if set, the classifier will interpolate the samples frames
                                to scale them to the number specified by this parameter.
+        :param middlewares: a list of Middlewares that will be applied to each loaded sample before
+                            loading the data.
         """
         # Dataset_path and model_path must be mutually exclusive and can't be both defined.
         # That's because dataset_path is used in the training phase, while
@@ -263,6 +266,7 @@ class AbstractClassifier(object):
         self.verbose = verbose
         self.autonormalize = autonormalize
         self.autoscale_size = autoscale_size
+        self.middlewares = middlewares
 
         # This is initially false and becomes true only when a valid model is ready
         # That could happen when a model is trained or loaded
@@ -378,6 +382,10 @@ class AbstractClassifier(object):
 
             # Load the sample
             sample = Sample.load_from_file(complete_path)
+
+            # Apply all the middlewares
+            for middleware in self.middlewares:
+                sample = middleware.process_sample(sample)
 
             # If autonormalize is set, normalize the sample's frames
             if self.autonormalize:
