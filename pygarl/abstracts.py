@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import joblib
 import seaborn
@@ -247,7 +248,7 @@ class AbstractClassifier(object):
         :param autoscale_size: an integer, if set, the classifier will interpolate the samples frames
                                to scale them to the number specified by this parameter.
         :param middlewares: a list of Middlewares that will be applied to each loaded sample before
-                            loading the data.
+                            loading the data. They are applied before the auto-normalization.
         """
         # Dataset_path and model_path must be mutually exclusive and can't be both defined.
         # That's because dataset_path is used in the training phase, while
@@ -411,6 +412,10 @@ class AbstractClassifier(object):
         if not self.is_trained:
             raise ValueError("The model must be trained before making a prediction")
 
+        # Apply all the middlewares
+        for middleware in self.middlewares:
+            sample = middleware.process_sample(sample)
+
         # If autonormalize is set, normalize the sample's frames
         if self.autonormalize:
             sample.normalize_frames()
@@ -429,12 +434,22 @@ class AbstractClassifier(object):
         """
         raise NotImplementedError("This method is not implemented in the abstract class.")
 
+    def print_info(self):
+        """
+        Print the classifier info.
+        """
+        print("AUTONORMALIZE:", self.autonormalize)
+        print("AUTOSCALE_SIZE:", self.autoscale_size)
+        print("GESTURES:", self.gestures)
+        print("MIDDLEWARES:", self.middlewares)
+
     def get_attributes(self):
         """
         Return a dictionary containing the needed attributes to save the classifier
         """
         return {'verbose': self.verbose, 'autonormalize': self.autonormalize,
-                'autoscale_size': self.autoscale_size, 'gestures': self.gestures}
+                'autoscale_size': self.autoscale_size, 'gestures': self.gestures,
+                'middlewares': self.middlewares}
 
     def load_attributes(self, attributes):
         """
@@ -446,6 +461,7 @@ class AbstractClassifier(object):
         self.autonormalize = attributes['autonormalize']
         self.autoscale_size = attributes['autoscale_size']
         self.gestures = attributes['gestures']
+        self.middlewares = attributes['middlewares']
 
     def predict_sample(self, sample):
         raise NotImplementedError("This method is not implemented in the abstract class.")
