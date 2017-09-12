@@ -135,6 +135,30 @@ class GradientThresholdMiddleware(AbstractMiddleware):
                     return None
 
 
+class AbsoluteScaleMiddleware(AbstractMiddleware):
+    """
+    It scales and calculates the absolute values of the sample data.
+    """
+    def __init__(self, scale_size=50):
+        # Call the base constructor
+        AbstractMiddleware.__init__(self)
+
+        # Set the parameters
+        self.scale_size = scale_size
+
+    def process_sample(self, sample):
+        """
+        Scale and calculate the sample data
+        """
+        # Calculate the absolute value
+        sample.abs()
+
+        # Scale the data
+        sample.scale_frames(n_frames=self.scale_size)
+
+        return sample
+
+
 class DelayGrouperMiddleware(AbstractMiddleware):
     """
     Group received samples into one Sample if they arrive within "delay" time from one another.
@@ -171,6 +195,6 @@ class PlotterMiddleware(AbstractMiddleware):
         :param sample: sample to plot
         """
         # Plot the sample
-        sample.plot()
+        sample.plot(block=False)
 
         return sample
