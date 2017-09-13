@@ -74,6 +74,12 @@ class Sample(object):
         
         :param n_frames: Final number of frames in the sample.
         """
+        # Correct the case with only one data frame
+        if self.data.shape[0] <= 1:
+            # Copy the only frame two times
+            # Basically, [[1, 2, 3]] becomes [[1, 2, 3], [1, 2, 3]]
+            self.data = sp.repeat(self.data, 2, axis=0)
+
         # Get the Sample data axis dimensions
         x_size = self.data.shape[0]
         y_size = self.data.shape[1]
