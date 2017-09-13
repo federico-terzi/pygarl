@@ -3,6 +3,7 @@ import importlib
 import os
 
 from pygarl.plugins.plist import list_serial_ports
+from pygarl.plugins.plot import plot_sample
 from pygarl.plugins.record import record_new_samples, record_new_samples_stream
 from pygarl.plugins.train import train_svm_classifier, train_mlp_classifier
 
@@ -100,6 +101,14 @@ def example(port, example_name, args):
     # Run the example
     ex.run_example(arguments, port=port)
 
+
+@cli.command()
+@click.argument('sample_file')
+def plot(sample_file):
+    """
+    Plot the sample for the given file
+    """
+    plot_sample(sample_file)
 
 if __name__ == '__main__':
     cli()
