@@ -104,6 +104,36 @@ class Sample(object):
         # Calculate the absolute value of each axis
         self.data = sp.absolute(self.data)
 
+    def trim(self, threshold=100):
+        """
+        Trim the extremes of the sample data until they exceed the threshold.
+        Useful when using a stream and a bit of cleaning is needed.
+        """
+        # Get the sample gradient
+        gradient = self.gradient()
+
+        # Calculate the average for each axis
+        average = sp.average(gradient, axis=1)
+
+        # Get the index of the first element grater than the threshold
+        initial = sp.argmax(average > threshold)
+
+        # Get a reversed view of the array
+        reverse = average[::-1]
+
+        # Get the index of the first element grater than the threshold, starting from the end
+        end = average.size - sp.argmax(reverse > threshold)
+
+        # Trim the data array by keeping only the sector between the two indexes
+        self.data = self.data[initial:end:]
+
+    def gradient(self):
+        """
+        Return a numpy array containing the gradient of the sample data
+        """
+        # Calculate the gradient and extract only the first element
+        return sp.gradient(self.data)[0]
+
     def plot(self, block=True):
         """
         Using matplotlib, open a dialog with the plotted Sample data.
@@ -131,13 +161,6 @@ class Sample(object):
 
             # Show the plot
             plt.show(block=False)
-
-    def gradient(self):
-        """
-        Return a numpy array containing the gradient of the sample data
-        """
-        # Calculate the gradient and extract only the first element
-        return sp.gradient(self.data)[0]
 
     def __str__(self):
         # Print the data, one frame per line

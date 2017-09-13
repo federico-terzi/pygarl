@@ -12,7 +12,7 @@ class GradientThresholdMiddleware(AbstractMiddleware):
     if not, it blocks the sample.
     If the group=True, the middleware will try to group different samples into one.
     """
-    def __init__(self, threshold=10, group=False, sample_group_delay=2, verbose=False):
+    def __init__(self, threshold=10, group=False, sample_group_delay=2, verbose=False, autotrim=False, trim_threshold=10):
         """
         Class constructor
         :param threshold: The value that must be crossed to mark a sample as valid.
@@ -27,7 +27,12 @@ class GradientThresholdMiddleware(AbstractMiddleware):
                                     samples have some oscillations that make the middleware split
                                     samples even if they belong to the same one.
         
-        :param verbose:   If True, prints more information
+        :param verbose:   If True, prints more information.
+        
+        :param autotrim: If True, trim the sample data ends if they are below the trim_threshold.
+                         Note: works only if group = True
+        
+        :param trim_threshold: Threshold for the autotrim property.
         """
         # Call the base constructor
         AbstractMiddleware.__init__(self)
@@ -37,6 +42,8 @@ class GradientThresholdMiddleware(AbstractMiddleware):
         self.verbose = verbose
         self.group = group
         self.sample_group_delay = sample_group_delay
+        self.autotrim = autotrim
+        self.trim_threshold = trim_threshold
 
         # Create the array that will hold the sample data to be grouped
         # Initially it is None
@@ -129,6 +136,10 @@ class GradientThresholdMiddleware(AbstractMiddleware):
                     # Create a new sample with the grouped data
                     new_sample = Sample(data=grouped_data, gesture_id=sample.gesture_id)
 
+                    # Trim the sample data if autotrim is enabled
+                    if self.autotrim:
+                        new_sample.trim(self.trim_threshold)
+
                     # Return the new sample
                     return new_sample
                 else:  # Buffer empty, return none
@@ -155,6 +166,27 @@ class AbsoluteScaleMiddleware(AbstractMiddleware):
 
         # Scale the data
         sample.scale_frames(n_frames=self.scale_size)
+
+        return sample
+
+
+class TrimmerMiddleware(AbstractMiddleware):
+    """
+    Trim the extremes of a sample that are lower than the threshold
+    """
+    def __init__(self, threshold=300):
+        # Call the base constructor
+        AbstractMiddleware.__init__(self)
+
+        # Set the parameters
+        self.threshold = threshold
+
+    def process_sample(self, sample):
+        """
+        Trim the sample data
+        """
+        # Trim the sample data
+        sample.trim(self.threshold)
 
         return sample
 
