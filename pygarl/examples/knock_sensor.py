@@ -39,7 +39,7 @@ def run_example(*args, **kwargs):
     manager.attach_receiver(middleware)
 
     # Create a classifier
-    classifier = MLPClassifier(model_path=args[0])
+    classifier = SVMClassifier(model_path=args[0])
 
     # Load the model
     classifier.load()
