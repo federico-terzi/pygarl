@@ -150,17 +150,22 @@ class AbsoluteScaleMiddleware(AbstractMiddleware):
     """
     It scales and calculates the absolute values of the sample data.
     """
-    def __init__(self, scale_size=50):
+    def __init__(self, scale_size=50, subtract=None):
         # Call the base constructor
         AbstractMiddleware.__init__(self)
 
         # Set the parameters
         self.scale_size = scale_size
+        self.subtract = subtract
 
     def process_sample(self, sample):
         """
         Scale and calculate the sample data
         """
+        # Subtract if enabled
+        if self.subtract is not None:
+            sample.subtract(self.subtract)
+
         # Calculate the absolute value
         sample.abs()
 

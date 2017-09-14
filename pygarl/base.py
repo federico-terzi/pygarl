@@ -117,6 +117,13 @@ class Sample(object):
             # Calculate the new interpolated data and reshape it.
             self.data = f(x_new).reshape(-1, 1)
 
+    def subtract(self, amount=0):
+        """
+        Subtract the amount from all the values
+        :param amount: the amount to subtract
+        """
+        self.data = self.data - amount
+
     def normalize_frames(self):
         """
         Normalize each axis of the Sample data
