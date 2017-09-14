@@ -4,7 +4,7 @@ import os
 
 from pygarl.plugins.plist import list_serial_ports
 from pygarl.plugins.plot import plot_sample
-from pygarl.plugins.record import record_new_samples, record_new_samples_stream
+from pygarl.plugins.record import record_new_samples, record_new_samples_stream, record_new_samples_piezo
 from pygarl.plugins.train import train_svm_classifier, train_mlp_classifier
 
 
@@ -42,6 +42,8 @@ def record(port, dir, gesture, axis, mode):
         record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
     elif mode == "stream":
         record_new_samples_stream(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
+    elif mode == "piezo":
+        record_new_samples_piezo(port=port, gesture_id=gesture, target_dir=dir)
 
 
 @cli.command()
