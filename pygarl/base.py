@@ -1,7 +1,7 @@
 import json
 import scipy as sp
 import matplotlib.pyplot as plt
-from scipy.interpolate import interp2d
+from scipy.interpolate import interp2d, interp1d
 from sklearn.preprocessing import scale
 
 
@@ -80,22 +80,42 @@ class Sample(object):
             # Basically, [[1, 2, 3]] becomes [[1, 2, 3], [1, 2, 3]]
             self.data = sp.repeat(self.data, 2, axis=0)
 
-        # Get the Sample data axis dimensions
-        x_size = self.data.shape[0]
-        y_size = self.data.shape[1]
+        # Check the number of axis
+        if len(self.data[0].shape) > 1:  # More than 1 axis
+            # Get the Sample data axis dimensions
+            x_size = self.data.shape[0]
+            y_size = self.data.shape[1]
 
-        # Create the indexes in the axis
-        x = sp.arange(0, x_size)
-        y = sp.arange(0, y_size)
+            # Create the indexes in the axis
+            x = sp.arange(0, x_size)
+            y = sp.arange(0, y_size)
 
-        # Create a function that interpolates the data points
-        f = interp2d(y, x, self.data)
+            # Create a function that interpolates the data points
+            f = interp2d(y, x, self.data)
 
-        # Create a new index of the desired size ( n_frames ).
-        x_new = sp.linspace(0, x_size - 1, n_frames)
+            # Create a new index of the desired size ( n_frames ).
+            x_new = sp.linspace(0, x_size - 1, n_frames)
 
-        # Calculate the new interpolated data and change it.
-        self.data = f(y, x_new)
+            # Calculate the new interpolated data and change it.
+            self.data = f(y, x_new)
+        else:  # The case with only one axis must be handled differently
+            # Reshape the data
+            reshaped = self.data.reshape(1, -1)[0]
+
+            # Get the Sample data axis dimensions
+            x_size = self.data.shape[0]
+
+            # Create the indexes in the axis
+            x = sp.arange(0, x_size)
+
+            # Create a function that interpolates the data points
+            f = interp1d(x, reshaped)
+
+            # Create a new index of the desired size ( n_frames ).
+            x_new = sp.linspace(0, x_size - 1, n_frames)
+
+            # Calculate the new interpolated data and reshape it.
+            self.data = f(x_new).reshape(-1, 1)
 
     def normalize_frames(self):
         """
