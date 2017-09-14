@@ -137,8 +137,16 @@ class Sample(object):
         """
         Return a numpy array containing the gradient of the sample data
         """
-        # Calculate the gradient and extract only the first element
-        return sp.gradient(self.data)[0]
+        # Check the number of axis
+        if len(self.data[0].shape) > 1:  # More than 1 axis
+            # Calculate the gradient and extract only the first element
+            return sp.gradient(self.data)[0]
+        else:  # The case with only one axis must be handled differently
+            # Reshape the data
+            reshaped = self.data.reshape(1, -1)[0]
+
+            # Calculate the gradient and reshape the result
+            return sp.gradient(reshaped).reshape(-1, 1)
 
     def plot(self, block=True):
         """
