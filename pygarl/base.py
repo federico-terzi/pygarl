@@ -1,5 +1,6 @@
 import json
 import scipy as sp
+import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp2d, interp1d
 from sklearn.preprocessing import scale
@@ -174,6 +175,23 @@ class Sample(object):
 
             # Calculate the gradient and reshape the result
             return sp.gradient(reshaped).reshape(-1, 1)
+
+    def fft(self):
+        """
+        Calculates the FFT of the sample data and replace the original data with it.
+        """
+        # Calculate the real FFT transform
+        fourier = np.fft.rfft(self.data, axis=0)
+
+        if fourier.shape[0] > 10:
+            # Delete the first term, it's usually too big and covers the other terms
+            fourier = fourier[10:]
+
+        # Calculate the absolute value ( complex number argument )
+        absolute = sp.absolute(fourier)
+
+        # Replace the data
+        self.data = absolute
 
     def plot(self, block=True):
         """

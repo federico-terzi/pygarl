@@ -175,6 +175,24 @@ class AbsoluteScaleMiddleware(AbstractMiddleware):
         return sample
 
 
+class FFTMiddleware(AbstractMiddleware):
+    """
+    Replace the sample with his fourier transform
+    """
+    def __init__(self):
+        # Call the base constructor
+        AbstractMiddleware.__init__(self)
+
+    def process_sample(self, sample):
+        """
+        Calculates the fft and replace the sample data
+        """
+        # Calculate the FFT and replace the data
+        sample.fft()
+
+        return sample
+
+
 class TrimmerMiddleware(AbstractMiddleware):
     """
     Trim the extremes of a sample that are lower than the threshold
