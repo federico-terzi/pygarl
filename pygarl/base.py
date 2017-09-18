@@ -81,7 +81,7 @@ class Sample(object):
             self.data = sp.repeat(self.data, 2, axis=0)
 
         # Check the number of axis
-        if len(self.data[0].shape) > 1:  # More than 1 axis
+        if self.data.shape[1] > 1:  # More than 1 axis
             # Get the Sample data axis dimensions
             x_size = self.data.shape[0]
             y_size = self.data.shape[1]
@@ -165,7 +165,7 @@ class Sample(object):
         Return a numpy array containing the gradient of the sample data
         """
         # Check the number of axis
-        if len(self.data[0].shape) > 1:  # More than 1 axis
+        if self.data.shape[1] > 1:  # More than 1 axis
             # Calculate the gradient and extract only the first element
             return sp.gradient(self.data)[0]
         else:  # The case with only one axis must be handled differently
