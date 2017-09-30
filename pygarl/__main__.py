@@ -6,6 +6,7 @@ from pygarl.plugins.plist import list_serial_ports
 from pygarl.plugins.plot import plot_sample
 from pygarl.plugins.record import record_new_samples, record_new_samples_stream, record_new_samples_piezo
 from pygarl.plugins.train import train_svm_classifier, train_mlp_classifier
+from pygarl.plugins.sprint import sprint as sprint_func
 
 
 def get_default_record_directory():
@@ -52,6 +53,16 @@ def plist():
     Prints all the available serial ports
     """
     list_serial_ports()
+
+
+@cli.command()
+@click.option('--port', '-p', default="COM6", help="Serial Port NAME, for example COM3.")
+@click.option('--baudrate', '-b', default=9600, help="Serial Port Baudrate, default 9600.")
+def sprint(port, baudrate):
+    """
+    Print the input received from the specified serial port
+    """
+    sprint_func(port=port, baudrate=baudrate)
 
 
 @cli.command()
