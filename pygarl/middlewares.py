@@ -240,9 +240,11 @@ class PlotterMiddleware(AbstractMiddleware):
     """
     Used to plot sample after being received
     """
-    def __init__(self):
+    def __init__(self, blocking=False):
         # Call the base constructor
         AbstractMiddleware.__init__(self)
+
+        self.blocking = blocking
 
     def process_sample(self, sample):
         """
@@ -250,6 +252,6 @@ class PlotterMiddleware(AbstractMiddleware):
         :param sample: sample to plot
         """
         # Plot the sample
-        sample.plot(block=False)
+        sample.plot(self.blocking)
 
         return sample

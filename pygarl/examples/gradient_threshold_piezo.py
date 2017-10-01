@@ -23,13 +23,9 @@ def run_example(*args, **kwargs):
     # Attach the middleware
     manager.attach_receiver(middleware)
 
-    # FFT
-    fft_mid = FFTMiddleware()
-    middleware.attach_receiver(fft_mid)
-
     # Also plot the sample
     plotter_mid = PlotterMiddleware()
-    fft_mid.attach_receiver(plotter_mid)
+    middleware.attach_receiver(plotter_mid)
 
     # Open the serial connection
     sdr.open()
