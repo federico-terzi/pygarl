@@ -150,13 +150,14 @@ class AbsoluteScaleMiddleware(AbstractMiddleware):
     """
     It scales and calculates the absolute values of the sample data.
     """
-    def __init__(self, scale_size=50, subtract=None):
+    def __init__(self, scale_size=50, subtract=None, rolling_mean_window=None):
         # Call the base constructor
         AbstractMiddleware.__init__(self)
 
         # Set the parameters
         self.scale_size = scale_size
         self.subtract = subtract
+        self.rolling_mean_window = rolling_mean_window
 
     def process_sample(self, sample):
         """
@@ -168,6 +169,10 @@ class AbsoluteScaleMiddleware(AbstractMiddleware):
 
         # Calculate the absolute value
         sample.abs()
+
+        # Calculate the rolling mean if enabled
+        if self.rolling_mean_window is not None:
+            sample.rolling_mean(self.rolling_mean_window)
 
         # Scale the data
         sample.scale_frames(n_frames=self.scale_size)

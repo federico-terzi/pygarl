@@ -9,7 +9,7 @@ def train(dataset_dir, output_file, n_jobs=1):
     Train an MLP model from the given dataset and save it to a file.
     """
     #fftm = FFTMiddleware()
-    asm = AbsoluteScaleMiddleware(subtract=500)
+    asm = AbsoluteScaleMiddleware(subtract=500, rolling_mean_window=4)
 
     # Create the classifier
     classifier = SVMClassifier(dataset_path=dataset_dir, verbose=True, n_jobs=n_jobs,

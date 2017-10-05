@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp2d, interp1d
 from sklearn.preprocessing import scale
+import pandas as pd
 
 
 class Sample(object):
@@ -110,7 +111,7 @@ class Sample(object):
             x = sp.arange(0, x_size)
 
             # Create a function that interpolates the data points
-            f = interp1d(x, reshaped)
+            f = interp1d(x, reshaped, kind="zero")
 
             # Create a new index of the desired size ( n_frames ).
             x_new = sp.linspace(0, x_size - 1, n_frames)
@@ -124,6 +125,14 @@ class Sample(object):
         :param amount: the amount to subtract
         """
         self.data = self.data - amount
+
+    def rolling_mean(self, window):
+        """
+        Calculate the rolling mean for the sample data
+        :param window: rolling mean window
+        :return: 
+        """
+        self.data = pd.rolling_mean(self.data, window, min_periods=1)
 
     def normalize_frames(self):
         """
