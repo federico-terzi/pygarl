@@ -13,7 +13,7 @@ def train(dataset_dir, output_file, n_jobs=1):
 
     # Create the classifier
     classifier = SVMClassifier(dataset_path=dataset_dir, verbose=True, n_jobs=n_jobs,
-                               autonormalize=True, autoscale_size=50, middlewares=[tm])
+                               autonormalize=False, autoscale_size=50, middlewares=[tm])
 
     # Train the classifier
     train_classifier(classifier=classifier, dataset_dir=dataset_dir, output_file=output_file, n_jobs=n_jobs)
