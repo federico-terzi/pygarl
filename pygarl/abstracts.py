@@ -517,7 +517,7 @@ class AbstractClassifier(object):
         # Create the HeatMap
         plt.figure(figsize=(10, 7))
         seaborn.set(font_scale=1.4)
-        seaborn.heatmap(df_cm, annot=True)
+        seaborn.heatmap(df_cm, annot=True, cmap=seaborn.color_palette("PuBu", 10))
 
         # Show the Plot
         plt.show()
