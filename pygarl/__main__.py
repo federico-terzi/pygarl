@@ -34,17 +34,19 @@ def cli():
 @click.option('--gesture', '-g', default="SAMPLE",
               help="Gesture ID of the recorded samples.")
 @click.option('--axis', '-a', default=6, help="Number of AXIS in the signal, default 6.")
-@click.option('--mode', '-m', default="discrete", help="Recording mode. You can choose between discrete and stream.")
-def record(port, dir, gesture, axis, mode):
+@click.option('--mode', '-m', default="discrete", help="Recording mode. You can choose between discrete, stream and piezo.")
+@click.option('--threshold', '-t', default=40, help="If stream or piezo mode is specified, use this parameter to"
+                                                            "regulate the threshold for the input.")
+def record(port, dir, gesture, axis, mode, threshold):
     """
     Record new samples and saves them to file
     """
     if mode == "discrete":
         record_new_samples(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
     elif mode == "stream":
-        record_new_samples_stream(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis)
+        record_new_samples_stream(port=port, gesture_id=gesture, target_dir=dir, expected_axis=axis, threshold=threshold)
     elif mode == "piezo":
-        record_new_samples_piezo(port=port, gesture_id=gesture, target_dir=dir)
+        record_new_samples_piezo(port=port, gesture_id=gesture, target_dir=dir, threshold=threshold)
 
 
 @cli.command()

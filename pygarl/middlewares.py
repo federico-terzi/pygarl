@@ -219,6 +219,36 @@ class TrimmerMiddleware(AbstractMiddleware):
         return sample
 
 
+class LengthThresholdMiddleware(AbstractMiddleware):
+    """
+    Let pass the samples that are between min_len and max_len, block the others.
+    """
+    def __init__(self, min_len=0, max_len=100000, verbose=False):
+        # Call the base constructor
+        AbstractMiddleware.__init__(self)
+
+        # Set the parameters
+        self.min_len = min_len
+        self.max_len = max_len
+        self.verbose = verbose
+
+    def process_sample(self, sample):
+        """
+        Filter the sample based on the length
+        """
+        # Print the sample length
+        if self.verbose:
+            print("SAMPLE_LEN", sample.framelen())
+
+        # If the sample is between, let it pass
+        # block it otherwise
+        if self.min_len <= sample.framelen() <= self.max_len:
+            return sample
+        else:
+            if self.verbose:
+                print("LTM: Blocked sample.")
+            return None
+
 class DelayGrouperMiddleware(AbstractMiddleware):
     """
     Group received samples into one Sample if they arrive within "delay" time from one another.

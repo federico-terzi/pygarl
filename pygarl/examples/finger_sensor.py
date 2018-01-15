@@ -2,7 +2,7 @@ import webbrowser
 
 from pygarl.base import CallbackManager
 from pygarl.classifiers import SVMClassifier, MLPClassifier
-from pygarl.middlewares import GradientThresholdMiddleware
+from pygarl.middlewares import GradientThresholdMiddleware, LengthThresholdMiddleware
 from pygarl.mocks import VerboseMiddleware
 from pygarl.data_readers import SerialDataReader
 from pygarl.predictors import ClassifierPredictor
@@ -26,7 +26,7 @@ def run_example(*args, **kwargs):
     sdr.attach_manager(manager)
 
     # Create a threshold middleware
-    middleware = GradientThresholdMiddleware(verbose=False, threshold=30, sample_group_delay=5, group=True)
+    middleware = GradientThresholdMiddleware(verbose=False, threshold=40, sample_group_delay=5, group=True)
 
     # Attach the middleware
     manager.attach_receiver(middleware)
@@ -43,8 +43,12 @@ def run_example(*args, **kwargs):
     # Create a ClassifierPredictor
     predictor = ClassifierPredictor(classifier)
 
+    # Filter the samples that are too short or too long
+    lfmiddleware = LengthThresholdMiddleware(verbose=True, min_len=180, max_len=600)
+    middleware.attach_receiver(lfmiddleware)
+
     # Attach the classifier predictor
-    middleware.attach_receiver(predictor)
+    lfmiddleware.attach_receiver(predictor)
 
     # Create a CallbackManager
     callback_mg = CallbackManager(verbose=True)

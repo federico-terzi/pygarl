@@ -1,9 +1,11 @@
 from __future__ import print_function
 import os
 from pygarl.data_readers import SerialDataReader
-from pygarl.middlewares import GradientThresholdMiddleware, PlotterMiddleware
+from pygarl.middlewares import GradientThresholdMiddleware, PlotterMiddleware, LengthThresholdMiddleware
 from pygarl.recorders import FileGestureRecorder
 from pygarl.sample_managers import DiscreteSampleManager, StreamSampleManager
+
+# python -m pygarl record -p COM6 -d D:\GitHub\pygarl-datasets\finger_dataset -g right -m stream
 
 
 def record_new_samples(port, gesture_id, target_dir, expected_axis):
@@ -46,7 +48,7 @@ def record_new_samples(port, gesture_id, target_dir, expected_axis):
     sdr.mainloop()
 
 
-def record_new_samples_stream(port, gesture_id, target_dir, expected_axis):
+def record_new_samples_stream(port, gesture_id, target_dir, expected_axis, threshold=50):
     """
     Used to record new samples for the specified gesture_id using a StreamSampleManager and a GradientThresholdMiddleware
     """
@@ -59,6 +61,7 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis):
     print("SERIAL PORT:", port)
     print("TARGET DIRECTORY:", target_dir)
     print("GESTURE ID:", gesture_id)
+    print("THRESHOLD:", threshold)
 
     # Create the SerialDataReader
     sdr = SerialDataReader(port, expected_axis=expected_axis, verbose=False)
@@ -70,10 +73,13 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis):
     sdr.attach_manager(manager)
 
     # Create a threshold middleware
-    middleware = GradientThresholdMiddleware(verbose=False, threshold=10, sample_group_delay=5, group=True)
+    middleware = GradientThresholdMiddleware(verbose=False, threshold=threshold, sample_group_delay=5, group=True)
 
     # Attach the middleware
     manager.attach_receiver(middleware)
+
+    lfmiddleware = LengthThresholdMiddleware(verbose=True, min_len=180, max_len=600)
+    middleware.attach_receiver(lfmiddleware)
 
     # Also plot the sample
     plotter_mid = PlotterMiddleware()
@@ -83,7 +89,7 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis):
     recorder = FileGestureRecorder(target_dir=target_dir, forced_gesture_id=gesture_id, verbose=True)
 
     # Attach the recorder to the manager
-    middleware.attach_receiver(recorder)
+    lfmiddleware.attach_receiver(recorder)
 
     # Open the serial connection
     print("Opening serial port...")
@@ -96,7 +102,7 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis):
     sdr.mainloop()
 
 
-def record_new_samples_piezo(port, gesture_id, target_dir):
+def record_new_samples_piezo(port, gesture_id, target_dir, threshold=5):
     """
     Used to record new samples for the specified gesture_id using a StreamSampleManager and a GradientThresholdMiddleware
     """
@@ -109,6 +115,7 @@ def record_new_samples_piezo(port, gesture_id, target_dir):
     print("SERIAL PORT:", port)
     print("TARGET DIRECTORY:", target_dir)
     print("GESTURE ID:", gesture_id)
+    print("THRESHOLD:", threshold)
 
     # Create the SerialDataReader
     sdr = SerialDataReader(port, expected_axis=1, baud_rate=74880, verbose=False)
@@ -120,7 +127,7 @@ def record_new_samples_piezo(port, gesture_id, target_dir):
     sdr.attach_manager(manager)
 
     # Create a threshold middleware
-    middleware = GradientThresholdMiddleware(verbose=False, threshold=5, sample_group_delay=20, group=True)
+    middleware = GradientThresholdMiddleware(verbose=False, threshold=threshold, sample_group_delay=20, group=True)
 
     # Attach the middleware
     manager.attach_receiver(middleware)

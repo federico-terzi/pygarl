@@ -119,6 +119,12 @@ class Sample(object):
             # Calculate the new interpolated data and reshape it.
             self.data = f(x_new).reshape(-1, 1)
 
+    def framelen(self):
+        """
+        :return: the number of frames of the sample 
+        """
+        return self.data.shape[0]
+
     def subtract(self, amount=0):
         """
         Subtract the amount from all the values
@@ -185,7 +191,7 @@ class Sample(object):
             # Calculate the gradient and reshape the result
             return sp.gradient(reshaped).reshape(-1, 1)
 
-    def fft(self):
+    def fft(self, append=True):
         """
         Calculates the FFT of the sample data and replace the original data with it.
         """
@@ -199,8 +205,13 @@ class Sample(object):
         # Calculate the absolute value ( complex number argument )
         absolute = sp.absolute(fourier)
 
-        # Replace the data
-        self.data = absolute
+        # If append=True, append the fourier transform to the data, if not replace the data
+        if append:
+            # Append the fft
+            self.data = np.append(self.data, absolute, axis=0)
+        else:
+            # Replace the data
+            self.data = absolute
 
     def plot(self, block=True):
         """
