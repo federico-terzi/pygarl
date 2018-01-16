@@ -3,6 +3,7 @@ import sys
 
 # Usage
 # python finger_aid.py <PORT> <model_path.svm>
+from serial import SerialException
 
 print("LOADING")
 sys.stdout.flush()
@@ -70,11 +71,17 @@ callback_mg.attach_callback("right", receive_gesture)
 callback_mg.attach_callback("tapclockwise", receive_gesture)
 callback_mg.attach_callback("tapanticlockwise", receive_gesture)
 callback_mg.attach_callback("pull", receive_gesture)
+callback_mg.attach_callback("push", receive_gesture)
 
 # Open the serial connection
-sdr.open()
-print("STARTED")
-sys.stdout.flush()
+try:
+    sdr.open()
+    print("STARTED")
+    sys.stdout.flush()
 
-# Start the main loop
-sdr.mainloop()
+    # Start the main loop
+    sdr.mainloop()
+except SerialException as e:
+    print("EXCEPTION")
+    print(e)
+    sys.stdout.flush()

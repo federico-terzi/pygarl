@@ -8,6 +8,17 @@ DataThread dataThread = new DataThread();
 
 Status status = Status.INIT;
 String gesture = "make a gesture";
+int alpha = 255;
+float alphaSpeed = 5;
+
+int rowCount = 5;
+int colCount = 7;
+
+int row = 2;
+int col = 3;
+
+int rowSize;
+int colSize;
 
 void setup() {
   size(1024, 768);
@@ -15,19 +26,40 @@ void setup() {
    
   println("Starting DataThread...");
   dataThread.start();
+  
+  rowSize = height/rowCount;
+  colSize = width/colCount;
+
 } 
 
 void draw () {
   background(0);
   
+  for (int r = 0; r < rowCount; r++) {
+     for (int c = 0; c < colCount; c++) {
+         if (r == row && c == col) {
+            fill(0,0,100, 150); 
+         }else{
+            fill(30,30,30, 255); 
+         }
+         rect(c*colSize, r*rowSize, colSize, rowSize);
+         
+     }
+  }
+  
   String statusText = "STARTING...";
   
+  fill(255,255,255);
   if (status == Status.INIT) {
      statusText = "INITIALIZING...";
   }else if (status == Status.LOADING) {
      statusText = "LOADING..."; 
   }else if (status == Status.STARTED) {
      statusText = "STARTED";
+     fill(0, 255, 0, 255);
+  }else if (status == Status.ERROR) {
+     statusText = "ERROR";
+     fill(255, 0, 0, 255);
   }
   
   
@@ -35,8 +67,26 @@ void draw () {
   text(statusText, width/2, 20); 
   
   textSize(64);
+  
   textAlign(CENTER);
-  text(gesture, width/2, height/2); 
+  fill(255,255,255, alpha);
+  text(gesture, width/2, height/2);
+  
+  alpha-=alphaSpeed;
+}
+
+void receiveGesture(String g) {
+  gesture = g;
+  alpha = 255;
+  if (g.equals("left")) {
+    col--;
+  }else if (g.equals("right")) {
+    col++;
+  }else if (g.equals("pull")) {
+    row++;
+  }else if (g.equals("push")) {
+    row--;
+  }
 }
 
 public class DataThread extends Thread {  
@@ -60,8 +110,10 @@ public class DataThread extends Thread {
           status = Status.LOADED; 
         }else if (line.equals("STARTED")) {
           status = Status.STARTED; 
+        }else if (line.equals("EXCEPTION")) {
+          status = Status.ERROR; 
         }else if (line.startsWith("GESTURE ")) {
-          gesture = line.substring(8);
+          receiveGesture(line.substring(8));
         }
         println(line);
         Thread.sleep(1);
@@ -89,6 +141,7 @@ enum Status {
   INIT,
   LOADING,
   LOADED,
-  STARTED
+  STARTED,
+  ERROR
 }
  
