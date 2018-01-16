@@ -1,11 +1,12 @@
 from __future__ import print_function
-import os
+import os, random
 from pygarl.data_readers import SerialDataReader
 from pygarl.middlewares import GradientThresholdMiddleware, PlotterMiddleware, LengthThresholdMiddleware
 from pygarl.recorders import FileGestureRecorder
 from pygarl.sample_managers import DiscreteSampleManager, StreamSampleManager
 
 # python -m pygarl record -p COM6 -d D:\GitHub\pygarl-datasets\finger_dataset -g right -m stream
+from pygarl.utils import RandomGestureChooser
 
 
 def record_new_samples(port, gesture_id, target_dir, expected_axis):
@@ -54,9 +55,18 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis, thres
     """
     print("RECORDING NEW SAMPLES")
 
+    gestures = []
+    __saved_gesture = None
+
     # Create the target directory if it doesn't exists
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
+
+    # If the gesture id is made of multiple gestures separated by a comma, extract them
+    if ',' in gesture_id:
+        gestures = map(lambda x: x.strip(), gesture_id.split(","))
+    else:
+        gestures = [gesture_id]
 
     print("SERIAL PORT:", port)
     print("TARGET DIRECTORY:", target_dir)
@@ -85,8 +95,11 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis, thres
     plotter_mid = PlotterMiddleware()
     middleware.attach_receiver(plotter_mid)
 
+    # Create the gesture chooser
+    gesture_chooser = RandomGestureChooser(gestures)
+
     # Create a FileGestureRecorder
-    recorder = FileGestureRecorder(target_dir=target_dir, forced_gesture_id=gesture_id, verbose=True)
+    recorder = FileGestureRecorder(target_dir=target_dir, forced_gesture_id=gesture_chooser, verbose=True)
 
     # Attach the recorder to the manager
     lfmiddleware.attach_receiver(recorder)

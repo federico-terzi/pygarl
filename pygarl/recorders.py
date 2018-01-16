@@ -4,6 +4,7 @@ import uuid
 import time
 import os.path
 from pygarl.abstracts import AbstractGestureRecorder
+from pygarl.utils import RandomGestureChooser
 
 
 class FileGestureRecorder(AbstractGestureRecorder):
@@ -31,7 +32,12 @@ class FileGestureRecorder(AbstractGestureRecorder):
         """
         # If a forced gesture id is set, override the sample gesture id
         if self.forced_gesture_id is not None:
-            sample.gesture_id = self.forced_gesture_id
+            # If the forced gesture is a value, set it.
+            # If it is a gesture chooser, call it and use the return value.
+            if not isinstance(self.forced_gesture_id, RandomGestureChooser):
+                sample.gesture_id = self.forced_gesture_id
+            else:
+                sample.gesture_id = self.forced_gesture_id.get_gesture()
 
         # Make sure the Sample has a gesture_id because it is needed to generate a filename
         if sample.gesture_id is None:
