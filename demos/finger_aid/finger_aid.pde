@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.concurrent.*;
 
 String port = "COM6";
-String modelPath = "C:\\Users\\Federico\\Documents\\finger_model.svm";
+String modelPath = "D:\\GitHub\\pygarl\\demos\\model.svm";
 String scriptPath = "D:\\GitHub\\pygarl\\demos\\finger_aid.py";
 DataThread dataThread = new DataThread();
 
