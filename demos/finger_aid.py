@@ -3,6 +3,12 @@ import sys
 
 # Usage
 # python finger_aid.py <PORT> <model_path.svm>
+
+# Useful commands
+# python -m pygarl record -p COM6 -m stream -g tap,doubletap,tapclockwise,tapanticlockwise,pull,push -d D:\GitHub\pygarl-datasets\finger_dataset
+#
+
+
 from serial import SerialException
 
 print("LOADING")
