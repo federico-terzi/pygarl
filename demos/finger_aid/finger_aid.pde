@@ -11,14 +11,19 @@ String gesture = "make a gesture";
 int alpha = 255;
 float alphaSpeed = 5;
 
-int rowCount = 5;
-int colCount = 7;
+String currentText = "";
 
-int row = 2;
-int col = 3;
+int rowCount = 3;
+int colCount = 3;
+
+int row = 1;
+int col = 1;
+int page = 0;
 
 int rowSize;
 int colSize;
+
+char[] letters = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
 void setup() {
   size(1024, 768);
@@ -44,6 +49,12 @@ void draw () {
          }
          rect(c*colSize, r*rowSize, colSize, rowSize);
          
+         fill(255, 255, 255);
+         int index = (page*colCount*rowCount) + c + r*colCount;
+         if (index < letters.length) {
+           textSize(64);
+           text(letters[index], c*colSize+colSize/2, r*rowSize+rowSize/2); 
+         }
      }
   }
   
@@ -66,8 +77,12 @@ void draw () {
   textSize(16);
   text(statusText, width/2, 20); 
   
-  textSize(64);
+  textSize(32);
+  textAlign(CENTER);
+  fill(255,255,255, 255);
+  text("\""+currentText+"\"", width/2, 50);
   
+  textSize(32);
   textAlign(CENTER);
   fill(255,255,255, alpha);
   text(gesture, width/2, height/2);
@@ -79,13 +94,47 @@ void receiveGesture(String g) {
   gesture = g;
   alpha = 255;
   if (g.equals("left")) {
-    col--;
+    if (col > 0) {
+      col--;
+    }else{
+      col = colCount-1; 
+    }
   }else if (g.equals("right")) {
-    col++;
+    if ((col+1) < colCount) {
+      col++;
+    }else{
+      col = 0; 
+    }
   }else if (g.equals("pull")) {
-    row++;
+    if ((row+1) < rowCount) {
+      row++;
+    }else{
+      row = 0; 
+    }
   }else if (g.equals("push")) {
-    row--;
+    if (row > 0) {
+      row--;
+    }else{
+      row = rowCount-1; 
+    }
+  }else if (g.equals("doubletap")) {
+    int numPages = ((int)(letters.length /(colCount*rowCount)))+1;
+    if ((page+1) < numPages) {
+      page++;
+    }else{
+      page=0;
+    }
+  }else if (g.equals("tapclockwise")) {
+    currentText += " ";
+  }else if (g.equals("tapanticlockwise")) {
+    if (currentText.length()>0) {
+      currentText = currentText.substring(0, currentText.length()-1); 
+    }
+  }else if (g.equals("tap")) {
+     int index = (page*colCount*rowCount) + col + row*colCount;
+     if (index < letters.length) {
+       currentText += letters[index];
+     }
   }
 }
 
