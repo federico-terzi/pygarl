@@ -19,6 +19,14 @@ def record_new_samples(port, gesture_id, target_dir, expected_axis):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
+    gestures = []
+
+    # If the gesture id is made of multiple gestures separated by a comma, extract them
+    if ',' in gesture_id:
+        gestures = map(lambda x: x.strip(), gesture_id.split(","))
+    else:
+        gestures = [gesture_id]
+
     print("SERIAL PORT:", port)
     print("TARGET DIRECTORY:", target_dir)
     print("GESTURE ID:", gesture_id)
@@ -32,8 +40,11 @@ def record_new_samples(port, gesture_id, target_dir, expected_axis):
     # Attach the manager
     sdr.attach_manager(manager)
 
+    # Create the gesture chooser
+    gesture_chooser = RandomGestureChooser(gestures)
+
     # Create a FileGestureRecorder
-    recorder = FileGestureRecorder(target_dir=target_dir, forced_gesture_id=gesture_id, verbose=True)
+    recorder = FileGestureRecorder(target_dir=target_dir, forced_gesture_id=gesture_chooser, verbose=True)
 
     # Attach the recorder to the manager
     manager.attach_receiver(recorder)
@@ -56,7 +67,6 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis, thres
     print("RECORDING NEW SAMPLES")
 
     gestures = []
-    __saved_gesture = None
 
     # Create the target directory if it doesn't exists
     if not os.path.exists(target_dir):
