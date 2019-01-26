@@ -12,7 +12,8 @@ def sprint(port, baudrate):
         line = s.readline()
 
         # Replace the ending characters
-        line = line.replace("\n", "")
-
+        #line = line.replace("\n", "")
+        #above code does not run in many devices, hence i have put them in comment
         # Print the line
-        print(line)
+        print("".join(map(chr,line)))
+        #this works fine
